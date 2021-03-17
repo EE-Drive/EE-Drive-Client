@@ -66,13 +66,20 @@ After installing the app, follow these steps
 
 By choosing a brand , model, and year . (These sections are necessary)
 
+    <img src="images/screenshot_Register.png" alt="register">
+
+
 ### Approve all permissions 
 
 Android 10 - Confirm all location and write requests to files.<br>
-In Android 11 - confirm the requests, and fasten them in the settings so that the app can write files to the device
+    <img src="images/screenshot_permission_10.png" alt="register">
+
+In Android 11 - confirm the requests, and fasten them in the settings so that the app can write files to the device<br>
+ <img src="images/screenshot_permission_11.png" alt="register">
 
 ### Connect To Obd
-Make sure the obd device is working
+Make sure the obd device is working.<br>
+Choose youre OBD device and start the drive.
 
 
 See the [open issues](https://github.com/EE-Drive/EE-Drive-Server/issues) for a list of proposed features (and known issues).
