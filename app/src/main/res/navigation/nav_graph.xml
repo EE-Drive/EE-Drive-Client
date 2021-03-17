@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/MainScreenFragment">
+
+    <fragment
+        android:id="@+id/MainScreenFragment"
+        android:name="com.example.ee_drive_client.view.MainScreenFragment"
+        android:label="Main "
+        tools:layout="@layout/fragment_main_screen">
+        <action
+            android:id="@+id/action_main_to_recording"
+            app:destination="@id/recordingScreenFragment" />
+        <action
+            android:id="@+id/action_main_to_first"
+            app:destination="@id/firstScreenFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/recordingScreenFragment"
+        android:name="com.example.ee_drive_client.view.RecordingScreenFragment"
+        android:label="Recording"
+        tools:layout="@layout/fragment_recording_screen">
+        <action
+            android:id="@+id/action_recording_to_main"
+            app:popUpTo="@id/MainScreenFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/firstScreenFragment"
+        android:name="com.example.ee_drive_client.view.FirstScreenFragment"
+        android:label="Welcome"
+        tools:layout="@layout/fragment_first_screen">
+        <action
+            android:id="@+id/actiom_first_to_add"
+            app:destination="@id/AddNewCarFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/AddNewCarFragment"
+        android:name="com.example.ee_drive_client.view.AddNewCarFragment"
+        android:label="Register a car"
+        tools:layout="@layout/fragment_add_new_car" />
+    <action android:id="@+id/action_global_MainScreenFragment" app:destination="@id/MainScreenFragment" />
+</navigation>
