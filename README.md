@@ -3,7 +3,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/EE-Drive/EE-Drive-Server">
+  <a href="https://github.com/EE-Drive/EE-Drive-Client">
     <img src="images/logo.png" alt="Logo">
   </a>
 
@@ -65,6 +65,7 @@ After installing the app, follow these steps
 ### Register a car
 
 By choosing a brand , model, and year . (These sections are necessary)
+
 
  <img src="images/screenshot_Register.png" alt="register">
 
