@@ -66,7 +66,7 @@ After installing the app, follow these steps
 
 By choosing a brand , model, and year . (These sections are necessary)
 
-    <img src="images/screenshot_Register.png" alt="register">
+ <img src="images/screenshot_Register.png" alt="register">
 
 
 ### Approve all permissions 
