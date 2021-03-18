@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.example.ee_drive_client.Activities.MainActivity;
 import com.example.ee_drive_client.model.OBDData;

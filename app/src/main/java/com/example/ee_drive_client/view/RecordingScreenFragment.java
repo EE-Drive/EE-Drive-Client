@@ -49,6 +49,9 @@ driveData=DriveData.getInstance();
         endBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO: remove observers
+                driveData.getSpeed().removeObservers(getViewLifecycleOwner());
+                drivingController.onStop();
                 Navigation.findNavController(view).navigate(R.id.action_recording_to_main);
             }
 
@@ -74,6 +77,10 @@ driveData=DriveData.getInstance();
                 if(aBoolean==true){
                     txtRecording.setText("Recording");
                     txtConnected.setText("Connected");
+                }
+                if(aBoolean==false){
+                    txtRecording.setText("Please choose an Obd");
+                    txtConnected.setText("Not connected");
                 }
 
             }

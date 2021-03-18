@@ -44,7 +44,7 @@ public class DrivingController {
                 String msg = "obsereved Location: " +
                        Double.toString(gps.getAltitude()) + "," +
                         Double.toString(gps.getLongitude());
-             //   Toast.makeText(view, msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(view, msg, Toast.LENGTH_SHORT).show();
                 Point pointCurrent = new Point(gps.getLongitude(), gps.getAltitude());
                 if (driveData.getPointsSize() == 0) {
                     driveData.addPoint(pointCurrent);
@@ -55,6 +55,7 @@ public class DrivingController {
                 }
             }
         });
+
 
         final int delay = 420000 ; // 1000 milliseconds == 1 second
         handler.postDelayed(new Runnable() {
@@ -80,6 +81,19 @@ public class DrivingController {
                 }
             }
         });
+    }
+
+    public void onStop(){
+        driveData.getRecordingData().postValue(false);
+        //TODO: obdhandler.disconnect
+        obdHandler.obdLiveData.removeObserver(new Observer<OBDData>() {
+
+            @Override
+            public void onChanged(OBDData obdData) {
+                Log.d("Disconnect","No longer fetting obd information");
+            }
+        });
+
     }
 
 
