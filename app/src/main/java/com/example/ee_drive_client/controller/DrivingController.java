@@ -44,7 +44,7 @@ public class DrivingController {
                 String msg = "obsereved Location: " +
                        Double.toString(gps.getAltitude()) + "," +
                         Double.toString(gps.getLongitude());
-                Toast.makeText(view, msg, Toast.LENGTH_SHORT).show();
+             //   Toast.makeText(view, msg, Toast.LENGTH_SHORT).show();
                 Point pointCurrent = new Point(gps.getLongitude(), gps.getAltitude());
                 if (driveData.getPointsSize() == 0) {
                     driveData.addPoint(pointCurrent);
@@ -86,6 +86,7 @@ public class DrivingController {
     public void onStop(){
         driveData.getRecordingData().postValue(false);
         //TODO: obdhandler.disconnect
+        //TODO: write remaining data to the json file. Reset drive data info (because he is a singelton)
         obdHandler.obdLiveData.removeObserver(new Observer<OBDData>() {
 
             @Override
