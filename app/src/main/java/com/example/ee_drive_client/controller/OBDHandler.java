@@ -170,6 +170,12 @@ public class OBDHandler {
             }
         mSocket = null;
     }
+    MutableLiveData<Boolean> getConnected =new MutableLiveData<Boolean>();
+
+    public MutableLiveData<Boolean> getGetConnected() {
+        return getConnected;
+    }
+
     private boolean getOBDSocket() {
 
         return mSocket.isConnected();

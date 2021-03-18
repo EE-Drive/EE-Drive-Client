@@ -57,7 +57,8 @@
         android:id="@+id/recording_speed_dynmTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginLeft="60dp"
         android:layout_marginTop="70dp"
         android:text="No data"
         android:textColor="#000000"
@@ -87,7 +88,7 @@
         android:layout_marginTop="149dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="245dp"
-        android:text="Recording"
+        android:text="Please choose Obd"
         android:textColor="#FF0606"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -111,5 +112,28 @@
         app:layout_constraintTop_toBottomOf="@+id/recording_record_txt"
         app:maxImageSize="36dp" />
 
+    <ImageButton
+        android:id="@+id/recording_obd_btn"
+        android:layout_width="79dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="256dp"
+        android:layout_marginEnd="309dp"
+        android:layout_marginRight="309dp"
+        android:background="#8BC34A"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/stat_sys_data_bluetooth"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recording_speed_dynmTxt" />
+
+    <TextView
+        android:id="@+id/recording_connected_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginBottom="82dp"
+        android:text="Not connected"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/recording_obd_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         mainController=new AppController(this);
         setContentView(R.layout.activity_main);
         requestPermissions();
-        startLocationUpdates();
 
         navController = Navigation.findNavController(this, R.id.mainactivity_navHost);
         NavigationUI.setupActionBarWithNavController(this, navController);
