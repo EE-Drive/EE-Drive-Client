@@ -56,7 +56,7 @@ public class DrivingController {
             }
         });
 
-        final int delay = 30000; // 1000 milliseconds == 1 second
+        final int delay = 420000 ; // 1000 milliseconds == 1 second
         handler.postDelayed(new Runnable() {
             public void run() {
                 JSONObject jsonObject = jsonObject = driveData.toJson();

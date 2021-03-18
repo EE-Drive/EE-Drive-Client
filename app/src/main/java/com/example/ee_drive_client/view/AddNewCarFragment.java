@@ -14,8 +14,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.ee_drive_client.R;
+import com.example.ee_drive_client.model.CarType;
 import com.example.ee_drive_client.repositories.RepositoryCar;
-import com.example.ee_drive_client.model.Car;
 
 
 public class AddNewCarFragment extends Fragment {
@@ -46,7 +46,7 @@ public class AddNewCarFragment extends Fragment {
                 String brand = editTextBrand.getText().toString();
                 int year = Integer.parseInt(editTextYear.getText().toString());
 
-                Car car =new Car(brand,model,year);
+                CarType car =new CarType(brand,model,year);
                 repositoryCar.insertCar(car);
                 Toast.makeText(getContext(), "Added car", Toast.LENGTH_SHORT).show();
             }

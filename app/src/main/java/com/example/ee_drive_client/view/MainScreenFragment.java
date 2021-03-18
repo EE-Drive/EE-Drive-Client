@@ -1,49 +1,27 @@
 package com.example.ee_drive_client.view;
 
-import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ee_drive_client.Activities.MainActivity;
 import com.example.ee_drive_client.R;
 import com.example.ee_drive_client.controller.AppController;
 import com.example.ee_drive_client.controller.DrivingController;
+import com.example.ee_drive_client.model.CarType;
 import com.example.ee_drive_client.repositories.RepositoryCar;
-import com.example.ee_drive_client.model.Car;
-import com.github.pires.obd.commands.SpeedCommand;
-import com.github.pires.obd.commands.engine.RPMCommand;
-import com.github.pires.obd.commands.protocol.EchoOffCommand;
-import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
-import com.github.pires.obd.commands.protocol.SelectProtocolCommand;
-import com.github.pires.obd.commands.protocol.TimeoutCommand;
-import com.github.pires.obd.enums.ObdProtocols;
-import com.google.android.gms.location.FusedLocationProviderClient;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.UUID;
-
-import static android.content.ContentValues.TAG;
 
 public class MainScreenFragment extends Fragment {
     AppController mainController;
@@ -97,7 +75,7 @@ public class MainScreenFragment extends Fragment {
 
     private ArrayList<String> getAllCarsFromDB() {
 
-        ArrayList<Car> carArrayList = (ArrayList<Car>) repo.getCars();
+        ArrayList<CarType> carArrayList = (ArrayList<CarType>) repo.getCars();
         ArrayList<String> arrayListSpinner = new ArrayList<String>();
 
 

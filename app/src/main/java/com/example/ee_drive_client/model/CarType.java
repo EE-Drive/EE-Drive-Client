@@ -1,15 +1,34 @@
 package com.example.ee_drive_client.model;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "CarType")
+
 public class CarType {
 
     String brand;
     String model;
     int year = 0;
+    @PrimaryKey(autoGenerate = false)
+    @NonNull
+    private String uniqueModel;
+
+    @NonNull
+    public String getUniqueModel() {
+        return uniqueModel;
+    }
+
+    public void setUniqueModel(@NonNull String uniqueModel) {
+        this.uniqueModel = uniqueModel;
+    }
 
     public CarType(String brand, String model, int year) {
         this.brand = brand;
         this.model = model;
         this.year = year;
+        initUniqueModel();
     }
 
     public CarType(CarType ct) {
@@ -21,6 +40,11 @@ public class CarType {
     public String getBrand() {
         return brand;
     }
+
+    private void initUniqueModel() {
+        this.uniqueModel = brand + "_" + model + "_" + year;
+    }
+
 
     public void setBrand(String brand) {
         this.brand = brand;
@@ -50,5 +74,9 @@ public class CarType {
                 ", year:" + year +
                 '}';
     }
+    public String loadFullModelForShow() {
+        return model+" "+brand+" " +year;
+    }
+
 }
 

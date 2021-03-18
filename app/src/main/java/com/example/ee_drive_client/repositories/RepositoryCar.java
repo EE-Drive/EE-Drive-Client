@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.example.ee_drive_client.ICarDao;
 import com.example.ee_drive_client.data.RoomDataBaseCar;
-import com.example.ee_drive_client.model.Car;
+import com.example.ee_drive_client.model.CarType;
 
 import java.util.List;
 
@@ -18,10 +18,10 @@ public class RepositoryCar {
         iCarDao = roomDatabase.getCarDao();
     }
 
-    public void insertCar(Car car) {
+    public void insertCar(CarType car) {
         iCarDao.insertCar(car);
     }
-    public List<Car> getCars(){
+    public List<CarType> getCars(){
         return iCarDao.getAllCars();
     }
 
