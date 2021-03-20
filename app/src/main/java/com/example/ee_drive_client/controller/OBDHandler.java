@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.example.ee_drive_client.Activities.MainActivity;
 import com.example.ee_drive_client.model.OBDData;
@@ -170,6 +171,12 @@ public class OBDHandler {
             }
         mSocket = null;
     }
+    MutableLiveData<Boolean> getConnected =new MutableLiveData<Boolean>();
+
+    public MutableLiveData<Boolean> getGetConnected() {
+        return getConnected;
+    }
+
     private boolean getOBDSocket() {
 
         return mSocket.isConnected();

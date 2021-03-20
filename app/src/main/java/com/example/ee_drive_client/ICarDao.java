@@ -5,7 +5,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.example.ee_drive_client.model.Car;
+import com.example.ee_drive_client.model.CarType;
 
 import java.util.List;
 
@@ -13,10 +13,10 @@ import java.util.List;
 public interface ICarDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertCar(Car car);
+    void insertCar(CarType car);
 
-    @Query("SELECT * FROM Car")
-    List<Car> getAllCars();
+    @Query("SELECT * FROM CarType")
+    List<CarType> getAllCars();
 
 
 }
