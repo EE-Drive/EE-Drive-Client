@@ -126,6 +126,7 @@ public class DriveData extends Activity {
         JSONObject json = new JSONObject();
         try {
             json.put("id", this.id);
+            json.put("isSentToServer",this.isSentToServer);
             json.put("timeAndDate", this.timeAndDate);
             json.put("driverAssist", this.driverAssist);
             json.put("carType", this.carType);
