@@ -4,6 +4,8 @@ package com.example.ee_drive_client.model;
 import android.app.Activity;
 import android.content.Context;
 
+import androidx.lifecycle.MutableLiveData;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -85,6 +87,31 @@ public class DriveData extends Activity {
         return this.points.size();
     }
 
+    public void addPoint(Point point){
+        this.points.add(point);
+    }
+    public void addInfoToLastPoint(OBDData obdData){
+        double mFuel=obdData.getFuel();
+        this.points.get(this.getPointsSize()-1).append(obdData.getSpeed());
+        if(mFuel!=0)
+        this.points.get(this.getPointsSize()-1).appendFuel(mFuel);
+        else{
+            //TODO: A CAR DOES NOT SUPPORT getFuel
+        }
+    }
+
+    public Point getLastPoint(){
+        return  this.points.get(getPointsSize()-1);
+    }
+    MutableLiveData<Integer> getLiveSpeed = new MutableLiveData<Integer>();
+    public MutableLiveData<Integer> getSpeed() {
+        return this.getLiveSpeed;
+    }
+    MutableLiveData<Boolean> getRecording =new MutableLiveData<Boolean>();
+
+    public MutableLiveData<Boolean> getRecordingData() {
+        return getRecording;
+    }
 
     public static DriveData getInstance() {
         if (instance == null)
