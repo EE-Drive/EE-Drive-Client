@@ -136,6 +136,28 @@ public class DriveData extends Activity {
         }
         return json;
     }
+    public JSONObject toJsonServerStartOfDrive() {
+        JSONObject json = new JSONObject();
+        try {
+
+            json.put("driverAssist", this.driverAssist);
+            json.put("carTypeId", this.carType);
+            json.put("driveRawData", this.points);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    public JSONObject toJsonServerAppendDrive() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("driveRawData", this.points);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
 
 
 }
