@@ -180,4 +180,26 @@ public class SendToServer {
 
         return didentSent;
     }
+    
+    public String getAllCarTypesFromServer() throws IOException, UnirestException {
+
+       Unirest.setTimeouts(0, 0);
+        HttpResponse<String> response = Unirest.get("http://eedrive.cs.colman.ac.il/api/car-type").asString();
+        //the function that call this method should put the result in JSON Array!!!!!!!
+        return response.toString();
+    }
+
+    public String sendStartOfDriveToServerAndGetDriveId(JSONObject drive){
+        Unirest.setTimeouts(0, 0);
+        RequestBodyEntity response = Unirest.post("http://eedrive.cs.colman.ac.il/api/drive").body(drive.toString());
+              return response.toString();
+    }
+    public String sendDataTOExsistinDrive(JSONObject drive,String DriveId){
+        Unirest.setTimeouts(0, 0);
+        RequestBodyEntity response = Unirest.post("http://eedrive.cs.colman.ac.il/api/drive/"+DriveId).body(drive.toString());
+        //if we get code 400 there is a problem
+        return response.toString();
+    }
+
+    
 }
