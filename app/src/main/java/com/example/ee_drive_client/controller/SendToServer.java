@@ -3,7 +3,12 @@ package com.example.ee_drive_client.controller;
 import android.os.Environment;
 
 import com.example.ee_drive_client.model.CarType;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.body.RequestBodyEntity;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -70,7 +75,7 @@ public class SendToServer {
     */
     public String getId(CarType CT) throws IOException {
 
-        this.url = new URL(this.url.getPath().toString() + "/api/drive");
+        this.url = new URL(this.url.getPath().toString() + "/api/car-type");
         String id = "";
         int attempt = 0;
         boolean sent = false;
@@ -180,26 +185,93 @@ public class SendToServer {
 
         return didentSent;
     }
-    
-    public String getAllCarTypesFromServer() throws IOException, UnirestException {
 
-       Unirest.setTimeouts(0, 0);
-        HttpResponse<String> response = Unirest.get("http://eedrive.cs.colman.ac.il/api/car-type").asString();
+    public ArrayList<CarType> getAllCarTypesFromServer() throws IOException, UnirestException, JSONException {
+        ArrayList<CarType> carArr= new ArrayList<CarType>();
+        Unirest.setTimeouts(0, 0);
+        int attempt =0;
+        int requestId=0;
+        HttpResponse<String> response= null;
+        while(attempt<5 && requestId!=200) {
+
+            response = Unirest.get("http://eedrive.cs.colman.ac.il/api/car-type").asString();
+            requestId=response.getCode();
+            attempt++;
+
+
+        }
+        if(requestId==200){
+            JSONArray sa = new JSONArray(response.getBody());
+            for(int i=0 ;i<sa.length();i++) {
+                JSONObject drive = new JSONObject(sa.get(i).toString());
+                String id=drive.getString("_id");
+                String companyName=drive.getString("companyName");
+                String brandName=drive.getString("brandName");
+                String year=drive.getString("year");
+                carArr.add(new CarType(id,companyName,brandName,year));
+
+
+            }
+            return carArr;
+
+        }
+
         //the function that call this method should put the result in JSON Array!!!!!!!
-        return response.toString();
+        return null;
     }
 
-    public String sendStartOfDriveToServerAndGetDriveId(JSONObject drive){
+    public String sendStartOfDriveToServerAndGetDriveId(JSONObject drive) throws UnirestException {
         Unirest.setTimeouts(0, 0);
-        RequestBodyEntity response = Unirest.post("http://eedrive.cs.colman.ac.il/api/drive").body(drive.toString());
-              return response.toString();
+        String driveData=drive.toString();
+        HttpResponse<String> response = Unirest
+                .post("http://eedrive.cs.colman.ac.il/api/drive")
+                .header("Content-Type", "application/json")
+
+                .body(driveData)
+                .asString();
+        return response.getBody();
     }
-    public String sendDataTOExsistinDrive(JSONObject drive,String DriveId){
+
+
+    public String sendDataTOExsistinDrive(JSONObject drive,String DriveId) throws UnirestException {
+        String driveData=drive.toString();
         Unirest.setTimeouts(0, 0);
-        RequestBodyEntity response = Unirest.post("http://eedrive.cs.colman.ac.il/api/drive/"+DriveId).body(drive.toString());
+        HttpResponse<String> response= Unirest
+                .patch("http://eedrive.cs.colman.ac.il/api/drive/"+DriveId)
+                .header("Content-Type", "application/json")
+                .body(driveData)
+                .asString();
         //if we get code 400 there is a problem
-        return response.toString();
+        return response.getBody();
     }
 
-    
+    public String addCarTypeToServerReceiveId(CarType ct) throws UnirestException, JSONException {
+        HttpResponse<String> response= null;
+        int attempt =0;
+        int requestId=0;
+        Unirest.setTimeouts(0, 0);
+        String str=ct.toString();
+        while(attempt<5 && requestId!=200) {
+            response = Unirest
+                    .post("http://eedrive.cs.colman.ac.il/api/car-type")
+                    .header("Content-Type", "application/json")
+                    .body(str)
+                    .asString();
+
+            attempt++;
+        }
+        JSONObject jsonResponse =new JSONObject(response.getBody().toString());
+
+        if(response.getCode()==200||response.getCode()==201)
+        {
+            str=jsonResponse.getString("createdItemId");
+            return str;
+        }
+
+
+        //if we get code 400 there is a problem
+        return "fail to send car-type to server";
+    }
+
+
 }
