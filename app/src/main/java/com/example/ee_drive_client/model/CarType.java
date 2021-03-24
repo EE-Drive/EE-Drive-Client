@@ -2,33 +2,46 @@ package com.example.ee_drive_client.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 @Entity(tableName = "CarType")
 
 public class CarType {
-
-    String brand;
-    String model;
-    int year = 0;
     @PrimaryKey(autoGenerate = false)
     @NonNull
-    private String uniqueModel;
+    String _id;
+    String brand;
+    String model;
+    String year = "3000";
 
-    @NonNull
-    public String getUniqueModel() {
-        return uniqueModel;
+
+
+    public String get_id() {
+        return _id;
     }
 
-    public void setUniqueModel(@NonNull String uniqueModel) {
-        this.uniqueModel = uniqueModel;
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
-    public CarType(String brand, String model, int year) {
+
+
+    @Ignore
+    public CarType(String brand, String model, String year) {
+        this._id=null;
         this.brand = brand;
         this.model = model;
         this.year = year;
-        initUniqueModel();
+    }
+    public CarType( String _id, String brand, String model, String year) {
+        this._id=_id;
+        this.brand = brand;
+        this.model = model;
+        this.year = year;
     }
 
     public CarType(CarType ct) {
@@ -40,11 +53,6 @@ public class CarType {
     public String getBrand() {
         return brand;
     }
-
-    private void initUniqueModel() {
-        this.uniqueModel = brand + "_" + model + "_" + year;
-    }
-
 
     public void setBrand(String brand) {
         this.brand = brand;
@@ -58,11 +66,11 @@ public class CarType {
         this.model = model;
     }
 
-    public int getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(String year) {
         this.year = year;
     }
 
@@ -74,9 +82,23 @@ public class CarType {
                 ", year:" + year +
                 '}';
     }
+
+
+    public JSONObject toJsonAddCarTypeToServer() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("companyName", brand);
+            json.put("brandName", model);
+            json.put("year", year);
+
+        } catch (
+                JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
     public String loadFullModelForShow() {
         return model+" "+brand+" " +year;
     }
-
 }
 

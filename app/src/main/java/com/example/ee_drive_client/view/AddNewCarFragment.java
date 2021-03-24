@@ -16,6 +16,11 @@ import android.widget.Toast;
 import com.example.ee_drive_client.R;
 import com.example.ee_drive_client.model.CarType;
 import com.example.ee_drive_client.repositories.RepositoryCar;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
+import org.json.JSONException;
+
+import java.io.IOException;
 
 
 public class AddNewCarFragment extends Fragment {
@@ -31,7 +36,11 @@ public class AddNewCarFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        repositoryCar = new RepositoryCar(getContext());
+        try {
+            repositoryCar = new RepositoryCar(getContext());
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
 
 
         EditText editTextYear = view.findViewById(R.id.add_year_EditTxt);
@@ -44,10 +53,15 @@ public class AddNewCarFragment extends Fragment {
             public void onClick(View v) {
                 String model = editTextModel.getText().toString();
                 String brand = editTextBrand.getText().toString();
-                int year = Integer.parseInt(editTextYear.getText().toString());
-
+                String year = editTextYear.getText().toString();
                 CarType car =new CarType(brand,model,year);
-                repositoryCar.insertCar(car);
+                try {
+                    repositoryCar.insertCar(car);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (UnirestException e) {
+                    e.printStackTrace();
+                }
                 Toast.makeText(getContext(), "Added car", Toast.LENGTH_SHORT).show();
             }
         });

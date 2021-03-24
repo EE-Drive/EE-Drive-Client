@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.ee_drive_client.R;
 import com.example.ee_drive_client.controller.AppController;
+import com.example.ee_drive_client.controller.SendToServer;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -34,6 +35,9 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
+import org.json.JSONArray;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,9 +50,13 @@ public class MainActivity extends AppCompatActivity {
     NavController navController;
     AppController mainController;
     Context context;
+    Thread serverThread;
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
     private LocationRequest mLocationRequest;
+
+    public MainActivity() throws IOException {
+    }
 
 
     @Override

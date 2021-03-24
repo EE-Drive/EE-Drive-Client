@@ -115,7 +115,7 @@ public class DriveData extends Activity {
 
     public static DriveData getInstance() {
         if (instance == null)
-            instance = new DriveData("",false,new CarType("Mazda", "Three", 2004));
+            instance = new DriveData("",false,new CarType("Mazda", "Three", "2004"));
         return instance;
     }
     public void append(Point point) {
@@ -141,13 +141,15 @@ public class DriveData extends Activity {
         try {
 
             json.put("driverAssist", this.driverAssist);
-            json.put("carTypeId", this.carType);
+            json.put("carTypeId", this.carType.get_id());
             json.put("driveRawData", this.points);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return json;
     }
+
+
 
     public JSONObject toJsonServerAppendDrive() {
         JSONObject json = new JSONObject();
@@ -158,6 +160,24 @@ public class DriveData extends Activity {
         }
         return json;
     }
+
+
+    public JSONObject toJsonSaveFile() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("id", this.id);
+            json.put("isSentToServer",this.isSentToServer);
+            json.put("timeAndDate", this.timeAndDate);
+            json.put("driverAssist", this.driverAssist);
+            json.put("carType", this.carType);
+            json.put("carTypeId", this.carType.get_id());
+            json.put("driveRawData", this.points);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
 
 
 }

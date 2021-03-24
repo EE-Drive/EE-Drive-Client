@@ -20,7 +20,7 @@ import java.util.Collection;
 
 public class JsonHandler {
     public JSONObject driveDataJson;
-    MainActivity activity;
+
     public JsonHandler(JSONObject json) {
         this.driveDataJson = json;
     }
@@ -43,12 +43,11 @@ public class JsonHandler {
         File f = new File(Environment.getExternalStorageDirectory(), "EE-Drive");
         System.out.println(f);
         if (!f.exists()) {
-            System.out.println("dot exist i will create");
+            System.out.println("don't exist i will create");
             f.mkdirs();
             System.out.println(" i  create");
         }
         if (!f.exists()) {
-
             System.out.println("Still no exist");
         }
         File f1 = new File(Environment.getExternalStorageDirectory() + "/" + "EE-Drive", "Drives");
