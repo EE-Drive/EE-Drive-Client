@@ -44,7 +44,7 @@ public class DrivingController {
                 String msg = "obsereved Location: " +
                        Double.toString(gps.getAltitude()) + "," +
                         Double.toString(gps.getLongitude());
-             //   Toast.makeText(view, msg, Toast.LENGTH_SHORT).show();
+         //      Toast.makeText(view, msg, Toast.LENGTH_SHORT).show();
                 Point pointCurrent = new Point(gps.getLongitude(), gps.getAltitude());
                 if (driveData.getPointsSize() == 0) {
                     driveData.addPoint(pointCurrent);

@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import com.example.ee_drive_client.ICarDao;
 import com.example.ee_drive_client.model.CarType;
 
-@Database(entities = CarType.class, version = 3, exportSchema = false)
+@Database(entities = CarType.class, version = 5, exportSchema = false)
 public abstract class RoomDataBaseCar extends RoomDatabase {
 
     private static RoomDataBaseCar roomDatabase;
