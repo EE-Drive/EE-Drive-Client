@@ -27,7 +27,7 @@ public class AddNewCarFragment extends Fragment {
 
 
     private RepositoryCar repositoryCar;
-
+    Thread serverThread;
     public AddNewCarFragment() {
         // Required empty public constructor
     }
@@ -46,6 +46,7 @@ public class AddNewCarFragment extends Fragment {
         EditText editTextYear = view.findViewById(R.id.add_year_EditTxt);
         EditText editTextModel = view.findViewById(R.id.add_model_editTxt);
         EditText editTextBrand = view.findViewById(R.id.add_brand_editTxt);
+        EditText editTextEngine=view.findViewById(R.id.add_engine_editTxt);
         Button addBtn = view.findViewById(R.id.add_add_btn);
 
         addBtn.setOnClickListener(new View.OnClickListener() {
@@ -54,14 +55,23 @@ public class AddNewCarFragment extends Fragment {
                 String model = editTextModel.getText().toString();
                 String brand = editTextBrand.getText().toString();
                 String year = editTextYear.getText().toString();
-                CarType car =new CarType(brand,model,year);
-                try {
-                    repositoryCar.insertCar(car);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (UnirestException e) {
-                    e.printStackTrace();
-                }
+                String engine=editTextEngine.getText().toString();
+                CarType car =new CarType(brand,model,year,engine);
+
+                    serverThread=new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                repositoryCar.insertCar(car);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (UnirestException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+                serverThread.start();
                 Toast.makeText(getContext(), "Added car", Toast.LENGTH_SHORT).show();
             }
         });

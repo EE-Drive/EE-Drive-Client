@@ -26,11 +26,16 @@ public class RepositoryCar {
     }
 
     public void insertCar(CarType car) throws JSONException, UnirestException {
-      String id= sendToServer.addCarTypeToServerReceiveId(car);
-      car.set_id(id);
-        Log.d("id",id);
+//      String id= sendToServer.addCarTypeToServerReceiveId(car);
+//      car.set_id(id);
+//        Log.d("id",id);
+        String response=sendToServer.addCarTypeToServerReceiveId(car.toJsonAddCarTypeToServer());
+        car.set_id(response);
       iCarDao.insertCar(car);
 
+    }
+    public void insertCarDbOnly(CarType car){
+        iCarDao.insertCar(car);
     }
     public List<CarType> getCars(){
         return iCarDao.getAllCars();

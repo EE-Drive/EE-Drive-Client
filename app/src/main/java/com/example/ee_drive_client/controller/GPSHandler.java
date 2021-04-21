@@ -71,7 +71,7 @@ public class GPSHandler {
        // Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
         GPS gpsLocation=new GPS();
         gpsLocation.setLongitude(lastLocation.getLongitude());
-        gpsLocation.setAltitude(lastLocation.getAltitude());
+        gpsLocation.setLatitude(lastLocation.getLatitude());
 
         gpsData.postValue(gpsLocation);
       //  Log.d("TAG", msg);

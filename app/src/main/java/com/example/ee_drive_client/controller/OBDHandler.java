@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer;
 
 import com.example.ee_drive_client.Activities.MainActivity;
 import com.example.ee_drive_client.model.OBDData;
+import com.example.ee_drive_client.repositories.Calculator;
 import com.github.pires.obd.commands.ObdCommand;
 import com.github.pires.obd.commands.SpeedCommand;
 import com.github.pires.obd.commands.engine.MassAirFlowCommand;
@@ -62,6 +63,7 @@ public class OBDHandler {
     String deviceName;
     MainActivity activity;
     AppController mainController;
+    Calculator calculator=new Calculator();
     private OBDData obdData=new OBDData();
 
     public OBDHandler(Context mContext) {
@@ -74,7 +76,8 @@ public class OBDHandler {
         return mIsConnected;
     }
 
-    public boolean connect(MainActivity view,Context context) {
+
+    public boolean connect(MainActivity view, Context context) {
         mContext = context;
         this.activity = view;
         Log.d("Tag", "connect: ");
@@ -115,6 +118,7 @@ public class OBDHandler {
             }
 
         });
+
         alertDialog.setTitle("Choose Bluetooth device");
         alertDialog.show();
         if (mSocket != null){
@@ -184,6 +188,7 @@ public class OBDHandler {
 
     }
 
+
     private void resetOBD() {
         try {
             new EchoOffCommand().run(mSocket.getInputStream(), mSocket.getOutputStream());
@@ -241,7 +246,7 @@ public class OBDHandler {
                         for (ObdCommand command : mObdCommands) {
                             command.run(mSocket.getInputStream(), mSocket.getOutputStream()); //consider getting the streams outisde of the while
                             updateObd(new String[]{String.valueOf(System.currentTimeMillis()), command.getName(), command.getCalculatedResult()});
-                            obdLiveData.postValue(obdData);
+                                obdLiveData.postValue(obdData);
                         }
                     } catch (Exception ignored) {
                     }
@@ -266,6 +271,7 @@ public class OBDHandler {
     }
 
     public void updateObd(String[] obdCall) {
+        obdData.setmType(mObdType);
         if (true)
             mObdData.add(obdCall);
         switch (obdCall[1].charAt(0)) {

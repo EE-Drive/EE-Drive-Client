@@ -11,6 +11,15 @@ public class OBDData {
     private double rpm = 0;
     private double mMap = 0;
     private double mIat = 0;
+    private String mType="RPM";
+
+    public String getmType() {
+        return mType;
+    }
+
+    public void setmType(String mType) {
+        this.mType = mType;
+    }
 
     public double getLatitude() {
         return latitude;

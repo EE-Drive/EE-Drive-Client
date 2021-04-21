@@ -9,16 +9,27 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 @Entity(tableName = "CarType")
-
 public class CarType {
-    @PrimaryKey(autoGenerate = false)
     @NonNull
+    @PrimaryKey
     String _id;
     String brand;
     String model;
     String year = "3000";
+    String engineDisplacement;
 
 
+    @Ignore
+    public CarType(String id){
+        this._id=id;
+    }
+    public String getEngineDisplacement() {
+        return engineDisplacement;
+    }
+
+    public void setEngineDisplacement(String engineDisplacement) {
+        this.engineDisplacement = engineDisplacement;
+    }
 
     public String get_id() {
         return _id;
@@ -29,25 +40,27 @@ public class CarType {
     }
 
 
-
     @Ignore
-    public CarType(String brand, String model, String year) {
+    public CarType(String brand, String model, String year,String  engineDisplacement) {
         this._id=null;
         this.brand = brand;
         this.model = model;
         this.year = year;
+        this.engineDisplacement=engineDisplacement;
     }
-    public CarType( String _id, String brand, String model, String year) {
+    public CarType( String _id, String brand, String model, String year,String  engineDisplacement) {
         this._id=_id;
         this.brand = brand;
         this.model = model;
         this.year = year;
+        this.engineDisplacement=engineDisplacement;
     }
 
     public CarType(CarType ct) {
         this.brand = ct.brand;
         this.model = ct.model;
         this.year = ct.year;
+        this.engineDisplacement=ct.engineDisplacement;
     }
 
     public String getBrand() {
@@ -79,7 +92,8 @@ public class CarType {
         return "{" +
                 "brand:'" + brand + '\'' +
                 ", model:'" + model + '\'' +
-                ", year:" + year +
+                ", year:" + year + '\'' +
+                ", engineDisplacement:" + engineDisplacement+
                 '}';
     }
 
@@ -90,6 +104,8 @@ public class CarType {
             json.put("companyName", brand);
             json.put("brandName", model);
             json.put("year", year);
+            json.put("engineDisplacement",engineDisplacement);
+
 
         } catch (
                 JSONException e) {
@@ -97,8 +113,9 @@ public class CarType {
         }
         return json;
     }
-    public String loadFullModelForShow() {
-        return model+" "+brand+" " +year;
-    }
-}
 
+    public String loadFullModelForShow() {
+        return brand+" "+model+" "+year+" "+engineDisplacement;
+    }
+
+}

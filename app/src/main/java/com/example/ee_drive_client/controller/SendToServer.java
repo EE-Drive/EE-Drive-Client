@@ -1,12 +1,14 @@
 package com.example.ee_drive_client.controller;
 
 import android.os.Environment;
+import android.util.Log;
 
 import com.example.ee_drive_client.model.CarType;
+import com.example.ee_drive_client.repositories.GlobalContextApplication;
+import com.example.ee_drive_client.repositories.SharedPrefHelper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.body.RequestBodyEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +29,7 @@ public class SendToServer {
     public URL url;
 
 
-    public SendToServer() throws IOException {
+    public SendToServer()  throws IOException {
         this.url = new URL("https://eedrive.cs.colman.ac.il");
     }
 
@@ -208,9 +210,10 @@ public class SendToServer {
                 String companyName=drive.getString("companyName");
                 String brandName=drive.getString("brandName");
                 String year=drive.getString("year");
-                carArr.add(new CarType(id,companyName,brandName,year));
-
-
+                if(drive.has("engineDisplacement")){
+                    String engineDisplacement=drive.getString("engineDisplacement");
+                    carArr.add(new CarType(id,companyName,brandName,year,engineDisplacement));
+                }
             }
             return carArr;
 
@@ -220,7 +223,7 @@ public class SendToServer {
         return null;
     }
 
-    public String sendStartOfDriveToServerAndGetDriveId(JSONObject drive) throws UnirestException {
+    public JSONObject sendStartOfDriveToServerAndGetDriveId(JSONObject drive) throws UnirestException, JSONException {
         Unirest.setTimeouts(0, 0);
         String driveData=drive.toString();
         HttpResponse<String> response = Unirest
@@ -229,7 +232,19 @@ public class SendToServer {
 
                 .body(driveData)
                 .asString();
-        return response.getBody();
+
+        return new JSONObject(response.getBody().toString());
+    }
+
+    public JSONObject getAcarFromServer(String carId) throws UnirestException, JSONException {
+        Unirest.setTimeouts(0, 0);
+        HttpResponse<String> response;
+        response = Unirest.get("http://eedrive.cs.colman.ac.il/api/car-type/"+ carId).asString();
+        int requestId = response.getCode();
+
+
+
+        return new JSONObject(response.getBody().toString());
     }
 
 
@@ -245,7 +260,7 @@ public class SendToServer {
         return response.getBody();
     }
 
-    public String addCarTypeToServerReceiveId(CarType ct) throws UnirestException, JSONException {
+    public String addCarTypeToServerReceiveId(JSONObject ct) throws UnirestException, JSONException {
         HttpResponse<String> response= null;
         int attempt =0;
         int requestId=0;
@@ -253,18 +268,26 @@ public class SendToServer {
         String str=ct.toString();
         while(attempt<5 && requestId!=200) {
             response = Unirest
-                    .post("http://eedrive.cs.colman.ac.il/api/car-type")
+                    .post("http://eedrive.cs.colman.ac.il/api/car-type/")
                     .header("Content-Type", "application/json")
                     .body(str)
                     .asString();
-
+            requestId=response.getCode();
             attempt++;
         }
         JSONObject jsonResponse =new JSONObject(response.getBody().toString());
 
         if(response.getCode()==200||response.getCode()==201)
         {
+
             str=jsonResponse.getString("createdItemId");
+            //TODO: saving engingD to sharedpref
+            //getcartype
+     //     int engineD=Integer.parseInt(jsonResponse.getString("engineDisplacement"));
+            JSONObject carInfo=getAcarFromServer(str);
+            String CarEngine=carInfo.getString("engineDisplacement");
+            SharedPrefHelper.getInstance(GlobalContextApplication.getContext()).storeEngine(CarEngine);
+            SharedPrefHelper.getInstance(GlobalContextApplication.getContext()).storeId(str);
             return str;
         }
 

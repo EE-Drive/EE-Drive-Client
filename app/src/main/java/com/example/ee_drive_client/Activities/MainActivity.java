@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -62,10 +63,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainController=new AppController(this);
+        try {
+            mainController=new AppController(this);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
         setContentView(R.layout.activity_main);
         requestPermissions();
-
+        //Keeps Screen On
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         navController = Navigation.findNavController(this, R.id.mainactivity_navHost);
         NavigationUI.setupActionBarWithNavController(this, navController);
 

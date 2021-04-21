@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface ICarDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertCar(CarType car);
 
     @Query("SELECT * FROM CarType")

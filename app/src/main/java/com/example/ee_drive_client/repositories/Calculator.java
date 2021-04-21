@@ -1,4 +1,7 @@
-package com.example.ee_drive_client.data;
+package com.example.ee_drive_client.repositories;
+
+import android.content.Context;
+import android.util.Log;
 
 public class Calculator {
     //Most recent drive data
@@ -28,15 +31,20 @@ public class Calculator {
         this.mIat = mIat;
     }
 
+    public Calculator() {
+
+    }
+
     public double calcFuel(double maf) {
         return (maf * 3600) / (14.7 * 820);
     }
 
 
-    public double calcMaf(double rpm, double getmMap, double getmIat) {
+    public double calcMaf(double rpm, double getmMap, double getmIat, Context context) {
         mIat=getmIat+273.15; //converting celsius to kelvin
         mMap=((rpm*getmMap)/mIat)/2;
-        return ((mMap/60)*(DEFAULT_VOLUMETRIC_EFFICIENCY/100)*15*(MMAir/R))/1000;
+        Log.d("Engine",Integer.toString(SharedPrefHelper.getInstance(context).getEngine()));
+        return ((mMap/60)*(DEFAULT_VOLUMETRIC_EFFICIENCY/100)*SharedPrefHelper.getInstance(context).getEngine()*(MMAir/R))/1000;
     }
 }
 

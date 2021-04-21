@@ -4,12 +4,14 @@ import android.content.Context;
 
 import com.example.ee_drive_client.Activities.MainActivity;
 
+import java.io.IOException;
+
 public class AppController {
 
     MainActivity mainView;
     DrivingController drivingController;
     String error="";
-    public AppController(MainActivity mainView) {
+    public AppController(MainActivity mainView) throws IOException {
         drivingController=new DrivingController(mainView);
         this.mainView = mainView;
     }

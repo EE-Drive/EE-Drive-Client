@@ -4,6 +4,15 @@ public class GPS {
 
     private double altitude= 0f;
     private double longitude= 0f;
+    private double latitude=0f;
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
 
     public void setAltitude(double altitude) {
         this.altitude = altitude;

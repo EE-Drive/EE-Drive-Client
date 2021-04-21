@@ -1,4 +1,7 @@
 package com.example.ee_drive_client.model;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class Point {
@@ -7,25 +10,44 @@ public class Point {
     public ArrayList<Double> fuelCons = new ArrayList<Double>();
     public ArrayList<Integer> speeds = new ArrayList<Integer>();
 
-    public Point(double lat, double lang) {
-        this.lat = lat;
-        this.lang = lang;
-    }
-
-    public Point() {
-        this.lat=0;
-        this.lang=0;
-    }
-
     public double getLat() {
         return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
     }
 
     public double getLang() {
         return lang;
     }
 
-    public void appendFuel(double speed) {
+    public void setLang(double lang) {
+        this.lang = lang;
+    }
+
+    public ArrayList<Double> getFuelCons() {
+        return fuelCons;
+    }
+
+    public void setFuelCons(ArrayList<Double> fuelCons) {
+        this.fuelCons = fuelCons;
+    }
+
+    public ArrayList<Integer> getSpeeds() {
+        return speeds;
+    }
+
+    public void setSpeeds(ArrayList<Integer> speeds) {
+        this.speeds = speeds;
+    }
+
+    public Point(double lat, double lang) {
+        this.lat = lat;
+        this.lang = lang;
+    }
+
+    public void append(double speed) {
         this.fuelCons.add(speed);
     }
 
@@ -37,9 +59,28 @@ public class Point {
     public String toString() {
         return "{"+
                 "lat:" + lat +
-                ", lang:" + lang +
+                ", long:" + lang +
                 ", fuelCons:" + fuelCons +
                 ", speeds:" + speeds +
                 '}';
+    }
+
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        try {
+
+            json.put("lat", Double.toString(lat));
+            json.put("long",Double.toString(lang));
+            json.put("fuelCons", fuelCons);
+            json.put("speeds", speeds);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+    public void appendFuel(double speed) {
+        this.fuelCons.add(speed);
     }
 }
