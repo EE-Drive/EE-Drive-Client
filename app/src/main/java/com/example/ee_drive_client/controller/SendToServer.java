@@ -248,13 +248,13 @@ public class SendToServer {
     }
 
 
-    public String sendDataTOExsistinDrive(JSONObject drive,String DriveId) throws UnirestException {
-        String driveData=drive.toString();
+    public String sendDataTOExsistinDrive(JSONObject drive,String DriveId) throws UnirestException, JSONException {
+        String driveData=drive.getString("driveRawData");
         Unirest.setTimeouts(0, 0);
         HttpResponse<String> response= Unirest
                 .patch("http://eedrive.cs.colman.ac.il/api/drive/"+DriveId)
                 .header("Content-Type", "application/json")
-                .body(driveData)
+                .body("{driveRawData:" + driveData + "}" )
                 .asString();
         //if we get code 400 there is a problem
         return response.getBody();

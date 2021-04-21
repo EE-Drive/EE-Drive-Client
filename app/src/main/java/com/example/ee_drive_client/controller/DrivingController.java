@@ -82,11 +82,12 @@ public class DrivingController {
                         try {
                             if(driveInProcess==false){
                                response= sendToServer.sendStartOfDriveToServerAndGetDriveId(jsonObjectToServer);
-
                                 driveInProcess=true;
-                                driveId = (String) response.get("_id");
+                                driveId = (String) response.get("driveId");
                             }else{
-                                sendToServer.sendDataTOExsistinDrive(driveData.toJsonServerAppendDrive(),driveId);
+                                Log.d("here","here");
+
+                                sendToServer.sendDataTOExsistinDrive(jsonObjectToServer,driveId);
                             }
                         } catch (UnirestException | JSONException exception) {
                             exception.printStackTrace();
@@ -105,7 +106,7 @@ public class DrivingController {
         obdHandler.obdLiveData.observeForever(new Observer<OBDData>() {
             @Override
             public void onChanged(OBDData obdData) {
-                Log.d("Type",obdData.getmType());
+    //            Log.d("Type",obdData.getmType());
 //                if (obdData.getFuel() == 0 && obdData.getmMaf() == 0) {  //IF obd is rpm
 //                    obdData.setFuel(calculator.calcFuel(calculator.calcMaf(obdData.getRpm(), obdData.getmMap(), obdData.getmIat())));
 //                } else if (obdData.getFuel() == 0 && obdData.getmMaf() != 0) { //If obd is maf

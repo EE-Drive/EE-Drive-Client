@@ -221,7 +221,7 @@ public class OBDHandler {
                 resetOBD();
                 testObdType();
                 Toast.makeText(mContext, "OBD Type: "+mObdType, Toast.LENGTH_SHORT).show();
-                Log.d("OBDHandler", "OBD Type: "+mObdType);
+               // Log.d("OBDHandler", "OBD Type: "+mObdType);
                 startRecording();
 
 
