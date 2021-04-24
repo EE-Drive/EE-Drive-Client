@@ -68,7 +68,7 @@ public class DrivingController {
         });
 
 
-        final int delay = 10000; // 1000 milliseconds == 1 second
+        final int delay = 420000; // 1000 milliseconds == 1 second
         handler.postDelayed(new Runnable() {
             public void run() {
                 //   writeData(driveData);
