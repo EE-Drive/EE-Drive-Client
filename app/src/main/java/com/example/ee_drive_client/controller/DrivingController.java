@@ -154,7 +154,7 @@ public class DrivingController {
 
     public void writeData(DriveData driveData) {
         Log.d("Data", "Writing data");
-        JSONObject jsonObjectToServer = driveData.toJsonServerStartOfDrive();
+        JSONObject jsonObjectToServer = driveData.toJsonSaveFile();
         JSONObject jsonObjectTOFile = driveData.toJsonSaveFile();
         JsonHandler jsonHandler = new JsonHandler(jsonObjectToServer);
         jsonHandler.saveToFile(driveData.getTimeAndDate(), jsonObjectToServer);
