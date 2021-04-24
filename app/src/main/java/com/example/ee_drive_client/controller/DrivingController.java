@@ -80,7 +80,6 @@ public class DrivingController {
 
 
     public void onConnect(MainActivity view, Context context) {
-        driveData.driveInProcess=true;
         gpsHandler.startLocationUpdates();
         gpsHandler.gpsData.observeForever(new Observer<GPS>() {
             @Override
@@ -105,6 +104,7 @@ public class DrivingController {
         obdHandler.obdLiveData.observeForever(new Observer<OBDData>() {
             @Override
             public void onChanged(OBDData obdData) {
+                driveData.driveInProcess=true;
                 driveData.getRecordingData().postValue(true);
                 //            Log.d("Type",obdData.getmType());
 //                if (obdData.getFuel() == 0 && obdData.getmMaf() == 0) {  //IF obd is rpm
