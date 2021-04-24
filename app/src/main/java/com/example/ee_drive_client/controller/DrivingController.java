@@ -36,7 +36,6 @@ public class DrivingController {
     final Handler handler = new Handler();
     Calculator calculator;
     Double currentFuel;
-    Boolean driveInProcess = false;
     JSONObject response;
     String driveId;
 
@@ -66,10 +65,10 @@ public class DrivingController {
 
 
 
-        final int delay = 10000; // 1000 milliseconds == 1 second
+        final int delay = 30000; // 1000 milliseconds == 1 second
         handler.postDelayed(new Runnable() {
             public void run() {
-                if(driveInProcess==true){
+                if(driveData.driveInProcess==true){
                     writeData(driveData);
                 }else{
                     Toast.makeText(view, "No drive in progress", Toast.LENGTH_SHORT).show();
@@ -81,7 +80,7 @@ public class DrivingController {
 
 
     public void onConnect(MainActivity view, Context context) {
-        driveInProcess=true;
+        driveData.driveInProcess=true;
         gpsHandler.startLocationUpdates();
         gpsHandler.gpsData.observeForever(new Observer<GPS>() {
             @Override
@@ -91,7 +90,7 @@ public class DrivingController {
                         Double.toString(gps.getLongitude());
             //    Toast.makeText(view, msg, Toast.LENGTH_SHORT).show();
                 Point pointCurrent = new Point(gps.getLatitude(), gps.getLongitude());
-                if(driveInProcess=true) {
+                if(driveData.driveInProcess=true) {
                     if (driveData.getPointsSize() == 0) {
                         driveData.addPoint(pointCurrent);
                     } else {
@@ -132,11 +131,11 @@ public class DrivingController {
     }
 
     public void onStop() {
-        if(driveInProcess=true)
+        if(driveData.driveInProcess=true)
         writeData(driveData);
        Log.d("drive id",driveData.getId());
         driveData.resetData();
-        driveInProcess=false;
+        driveData.driveInProcess=false;
         driveData.getRecordingData().postValue(false);
         gpsHandler.stopLocationChanged();
 

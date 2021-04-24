@@ -21,6 +21,7 @@ import java.util.Date;
 
 public class DriveData extends Activity {
     String id;
+    public Boolean driveInProcess = false;
     public String timeAndDate;
     boolean isSentToServer = false;
     boolean driverAssist = false;
@@ -28,6 +29,14 @@ public class DriveData extends Activity {
     private static DriveData instance;
 
     public ArrayList<Point> points = new ArrayList<Point>();
+
+    public Boolean getDriveInProcess() {
+        return driveInProcess;
+    }
+
+    public void setDriveInProcess(Boolean driveInProcess) {
+        this.driveInProcess = driveInProcess;
+    }
 
     public DriveData(String id, boolean driverAssist, CarType carType) {
         this.id = id;
