@@ -132,10 +132,12 @@
         android:id="@+id/add_engine_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="49dp"
+        android:layout_marginLeft="49dp"
         android:layout_marginTop="48dp"
         android:text="Engine Decplecment"
         android:textColor="#5669D5"
         android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@+id/add_year_EditTxt"
-        tools:layout_editor_absoluteX="53dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_year_EditTxt" />
 </androidx.constraintlayout.widget.ConstraintLayout>

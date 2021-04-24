@@ -14,6 +14,7 @@ import com.example.ee_drive_client.model.GPS;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 
@@ -76,6 +77,11 @@ public class GPSHandler {
         gpsData.postValue(gpsLocation);
       //  Log.d("TAG", msg);
 
+    }
+
+    public void stopLocationChanged(){
+        getFusedLocationProviderClient(activity).removeLocationUpdates(new LocationCallback());
+        Toast.makeText(activity,"Stpopped",Toast.LENGTH_SHORT);
     }
 
     public LocationRequest getLocationRequest() {

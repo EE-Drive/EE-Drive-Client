@@ -233,7 +233,7 @@ public class SendToServer {
                 .body(driveData)
                 .asString();
 
-        return new JSONObject(response.getBody().toString());
+        return new JSONObject(response.getBody());
     }
 
     public JSONObject getAcarFromServer(String carId) throws UnirestException, JSONException {

@@ -2,6 +2,7 @@ package com.example.ee_drive_client.model;
 
 
 import android.app.Activity;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -30,15 +31,21 @@ public class DriveData extends Activity {
 
     public DriveData(String id, boolean driverAssist, CarType carType) {
         this.id = id;
-
         this.driverAssist = driverAssist;
         this.carType = carType;
-
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
         Date date = new Date(System.currentTimeMillis());
         this.timeAndDate = formatter.format(date);
     }
 
+    public void resetData(){
+        setId("");
+        for (int i=0;i<this.points.size();i++){
+            this.points.remove(i);
+        }
+        Log.d("Array removed",this.points.toString());
+
+    }
     public String getTimeAndDate() {
         return timeAndDate;
     }
