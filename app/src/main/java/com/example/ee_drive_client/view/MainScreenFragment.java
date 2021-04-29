@@ -66,7 +66,6 @@ public class MainScreenFragment extends Fragment {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-        //  getAllCarsFromServer();
         try {
             drivingController = new DrivingController((MainActivity) getActivity());
             mainController = new AppController((MainActivity) getActivity());
@@ -95,16 +94,23 @@ public class MainScreenFragment extends Fragment {
 
 
         Spinner mainSpinner = (Spinner) view.findViewById(R.id.main_spinner);
+
         mainSpinner.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, getAllCarsFromServer()));
         mainSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String arr[] = parent.getItemAtPosition(position).toString().split(" ");
                  brand=arr[0];
-                 if(arr.length>1)
-                 model=arr[1];
-                 if(arr.length>2)
-                 year=arr[2];
+                SharedPrefHelper.getInstance(getContext()).storeBrand(brand);
+
+                if(arr.length>1){
+                     model=arr[1];
+                     SharedPrefHelper.getInstance(getContext()).storeModel(model);
+                 }
+                 if(arr.length>2){
+                     year=arr[2];
+                     SharedPrefHelper.getInstance(getContext()).storeYear(year);
+                 }
                  engineD="1300";
                 if(arr.length>3){
                     engineD=arr[3];

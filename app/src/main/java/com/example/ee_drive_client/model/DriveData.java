@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.ee_drive_client.repositories.GlobalContextApplication;
 import com.example.ee_drive_client.repositories.SharedPrefHelper;
 import com.example.ee_drive_client.view.MainScreenFragment;
 
@@ -141,9 +142,11 @@ public class DriveData extends Activity {
 
     public static DriveData getInstance() {
         if (instance == null)
-            instance = new DriveData("", false, new CarType("Mazda", "Three", "2004","1300"));
+            instance = new DriveData("", false, new CarType(SharedPrefHelper.getInstance(GlobalContextApplication.getContext()).getBrand(), SharedPrefHelper.getInstance(GlobalContextApplication.getContext()).getModel(), SharedPrefHelper.getInstance(GlobalContextApplication.getContext()).getYear(),Integer.toString(SharedPrefHelper.getInstance(GlobalContextApplication.getContext()).getEngine())));
         return instance;
     }
+
+
 
     public void append(Point point) {
         this.points.add(point);
@@ -192,7 +195,7 @@ public class DriveData extends Activity {
     public JSONObject toJsonSaveFile() {
         JSONObject json = new JSONObject();
         try {
-            json.put("id", this.id);
+            json.put("id",this.id);
             json.put("isSentToServer", this.isSentToServer);
             json.put("timeAndDate", this.timeAndDate);
             json.put("driverAssist", this.driverAssist);

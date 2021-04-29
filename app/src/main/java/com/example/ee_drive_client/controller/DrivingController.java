@@ -40,7 +40,7 @@ public class DrivingController {
     String driveId;
 
     public DrivingController(MainActivity activity) throws IOException {
-        driveData=DriveData.getInstance();
+        driveData = DriveData.getInstance();
         obdHandler = new OBDHandler(activity);
         gpsHandler = new GPSHandler(LocationServices.getSettingsClient(activity), activity);
         calculator = new Calculator();
@@ -49,11 +49,11 @@ public class DrivingController {
 
     public void onStart(MainActivity view) {
         JSONObject jsonObjectToServer = driveData.toJsonServerStartOfDrive();
-        startThread=new Thread(new Runnable() {
+        startThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    driveData.setId(sendToServer.sendStartOfDriveToServerAndGetDriveId(jsonObjectToServer).getString("driveId"));
+                    driveData.setId(sendToServer.sendStartOfDriveToServerAndGetDriveId(jsonObjectToServer).getString("createdItemId"));
                 } catch (UnirestException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -64,13 +64,12 @@ public class DrivingController {
         startThread.start();
 
 
-
-        final int delay = 30000; // 1000 milliseconds == 1 second
+        final int delay = 420000; // 1000 milliseconds == 1 second
         handler.postDelayed(new Runnable() {
             public void run() {
-                if(driveData.driveInProcess==true){
+                if (driveData.driveInProcess == true) {
                     writeData(driveData);
-                }else{
+                } else {
                     Toast.makeText(view, "No drive in progress", Toast.LENGTH_SHORT).show();
                 }
                 handler.postDelayed(this, delay);
@@ -87,9 +86,9 @@ public class DrivingController {
                 String msg = "obsereved Location: " +
                         Double.toString(gps.getAltitude()) + "," +
                         Double.toString(gps.getLongitude());
-            //    Toast.makeText(view, msg, Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(view, msg, Toast.LENGTH_SHORT).show();
                 Point pointCurrent = new Point(gps.getLatitude(), gps.getLongitude());
-                if(driveData.driveInProcess=true) {
+                if (driveData.driveInProcess = true) {
                     if (driveData.getPointsSize() == 0) {
                         driveData.addPoint(pointCurrent);
                     } else {
@@ -104,15 +103,9 @@ public class DrivingController {
         obdHandler.obdLiveData.observeForever(new Observer<OBDData>() {
             @Override
             public void onChanged(OBDData obdData) {
-                driveData.driveInProcess=true;
+                driveData.driveInProcess = true;
                 driveData.getRecordingData().postValue(true);
                 //            Log.d("Type",obdData.getmType());
-//                if (obdData.getFuel() == 0 && obdData.getmMaf() == 0) {  //IF obd is rpm
-//                    obdData.setFuel(calculator.calcFuel(calculator.calcMaf(obdData.getRpm(), obdData.getmMap(), obdData.getmIat())));
-//                } else if (obdData.getFuel() == 0 && obdData.getmMaf() != 0) { //If obd is maf
-//                    obdData.setFuel(calculator.calcFuel(obdData.getmMaf()));
-//
-//                }
                 Double fuel;
                 fuel = calculator.calcFuel(calculator.calcMaf(obdData.getRpm(), obdData.getmMap(), obdData.getmIat(), view));
                 if (currentFuel != fuel) {
@@ -131,11 +124,10 @@ public class DrivingController {
     }
 
     public void onStop() {
-        if(driveData.driveInProcess=true)
-        writeData(driveData);
-       Log.d("drive id",driveData.getId());
+        if (driveData.driveInProcess = true)
+            writeData(driveData);
         driveData.resetData();
-        driveData.driveInProcess=false;
+        driveData.driveInProcess = false;
         driveData.getRecordingData().postValue(false);
         gpsHandler.stopLocationChanged();
 
@@ -162,7 +154,7 @@ public class DrivingController {
             @Override
             public void run() {
                 try {
-                    sendToServer.sendDataTOExsistinDrive(jsonObjectToServer,driveData.getId());
+                    sendToServer.sendDataTOExsistinDrive(jsonObjectToServer, driveData.getId());
                 } catch (UnirestException | JSONException exception) {
                     exception.printStackTrace();
                 }
