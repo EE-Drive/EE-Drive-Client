@@ -2,6 +2,8 @@ package com.example.ee_drive_client.controller;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.ee_drive_client.model.GPS;
+import com.example.ee_drive_client.repositories.GlobalContextApplication;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -29,12 +32,14 @@ public class GPSHandler {
     private LocationRequest mLocationRequest;
     private LocationSettingsRequest.Builder builder;
     private SettingsClient settingsClient;
-    private Activity activity;
+    private Context activity;
+   public MutableLiveData<GPS> gpsData=new MutableLiveData<GPS>();
 
-    public GPSHandler(SettingsClient settingsClient,Activity activity)
+    public GPSHandler(SettingsClient settingsClient)
     {
         // Create the location request to start receiving updates
-        this.activity=activity;
+
+        this.activity= GlobalContextApplication.getContext();
         mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(UPDATE_INTERVAL);
@@ -58,7 +63,7 @@ public class GPSHandler {
                 },
                 Looper.myLooper());
     }
-    MutableLiveData<GPS> gpsData=new MutableLiveData<GPS>();
+
 
 
     public void onLocationChanged(Location lastLocation) {

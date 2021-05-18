@@ -9,10 +9,12 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -26,6 +28,7 @@ import android.widget.Toast;
 import com.example.ee_drive_client.R;
 import com.example.ee_drive_client.controller.AppController;
 import com.example.ee_drive_client.controller.SendToServer;
+import com.example.ee_drive_client.service.DriveService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -62,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+
         super.onCreate(savedInstanceState);
         try {
             mainController=new AppController(this);
@@ -113,4 +119,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
 }

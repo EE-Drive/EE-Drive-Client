@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ee_drive_client.Activities.MainActivity;
 import com.example.ee_drive_client.R;
@@ -26,6 +27,7 @@ import com.example.ee_drive_client.controller.DrivingController;
 import com.example.ee_drive_client.controller.SendToServer;
 import com.example.ee_drive_client.model.CarType;
 import com.example.ee_drive_client.model.OBDData;
+import com.example.ee_drive_client.repositories.GlobalContextApplication;
 import com.example.ee_drive_client.repositories.RepositoryCar;
 import com.example.ee_drive_client.repositories.SharedPrefHelper;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -115,12 +117,13 @@ public class MainScreenFragment extends Fragment {
                 if(arr.length>3){
                     engineD=arr[3];
                 }
+                Toast.makeText(GlobalContextApplication.getContext(),"Car selected :"+brand,Toast.LENGTH_LONG).show();
+
                 serverThread=new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
                        String request=sendToServer.addCarTypeToServerReceiveId(new CarType(brand,model,year,engineD).toJsonAddCarTypeToServer());
-
                         } catch (UnirestException e) {
                             //repo.insertCarDbOnly(new CarType(brand,model,year,engineD));
                             e.printStackTrace();
