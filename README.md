@@ -27,7 +27,6 @@
       <ul>
         <li><a href="#register-a-car">Register A Car</a></li>
          <li><a href="#approve-all-permissions ">Approve All Permissions</a></li>
-        <li><a href="#connect-to-obd">Connect To Obd</a></li>
       </ul
     </li>
             <li>
