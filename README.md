@@ -101,7 +101,7 @@ Choose youre OBD device by clicking the bluetooth button, the drive will be star
    <img src="images/screenshot_Register.png" alt="register">
 
   
-  ###Car Details
+  ### Car Details
   You can check your car properties, and watch your drive history by clicking the "Car details" button.<br>
    <img src="images/screenshot_Register.png" alt="register">
 
