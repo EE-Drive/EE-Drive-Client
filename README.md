@@ -31,7 +31,7 @@
       </ul
     </li>
             <li>
-      <a href="#use-of-funcionalities">Use Of Functionalities</a>
+      <a href="#use-of-functionalities">Use Of Functionalities</a>
                 <ul>
         <li><a href="#choosing-a-car">Choosing a car</a></li>
          <li><a href="#drive ">Drive</a></li>
@@ -87,8 +87,7 @@ In Android 11 - confirm the requests, and fasten them in the settings so that th
  <img src="images/screenshot_permission_11.png" alt="register">
 
 
-  
- ## Use Of Functionalities 
+   ## Use Of Functionalities 
       
  ### Choosing a car
   Choose your car from the list in the Main screen.Press start to confirm your choice.<br>
