@@ -88,7 +88,7 @@ In Android 11 - confirm the requests, and fasten them in the settings so that th
 
 
   
- ##Use Of Functionalities 
+ ## Use Of Functionalities 
  ### Choosing a car
   Choose your car from the list in the Main screen.Press start to confirm your choice.<br>
    <img src="images/screenshot_Register.png" alt="register">
