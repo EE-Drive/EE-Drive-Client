@@ -30,6 +30,14 @@
         <li><a href="#connect-to-obd">Connect To Obd</a></li>
       </ul
     </li>
+            <li>
+      <a href="#use-of-funcionalities">Use Of functionalities</a>
+                <ul>
+        <li><a href="#choosing-a-car">Choosing a car</a></li>
+         <li><a href="#drive ">Drive</a></li>
+        <li><a href="#car-details">Car Details</a></li>
+      </ul  
+    </li>
   </ol>
 </details>
 
@@ -78,9 +86,26 @@ Android 10 - Confirm all location and write requests to files.<br>
 In Android 11 - confirm the requests, and fasten them in the settings so that the app can write files to the device<br>
  <img src="images/screenshot_permission_11.png" alt="register">
 
-### Connect To Obd
+
+  
+ ##Use Of Functionalities 
+ ### Choosing a car
+  Choose your car from the list in the Main screen.Press start to confirm your choice.<br>
+   <img src="images/screenshot_Register.png" alt="register">
+  
+ ### Drive
 Make sure the obd device is working.<br>
-Choose youre OBD device and start the drive.
+Choose youre OBD device by clicking the bluetooth button, the drive will be start automatically after succsfully connecting and receiving data from the obd .<br>
+  at the end of the drive, press the stop button in order to confirm your drive to the server.<br>
+  Note: if all permissions has been given like requested, the drive file will be created in your storage folder under the path "EE-Drive/Drives". <br>
+   <img src="images/screenshot_Register.png" alt="register">
+
+  
+  ###Car Details
+  You can check your car properties, and watch your drive history by clicking the "Car details" button.<br>
+   <img src="images/screenshot_Register.png" alt="register">
+
+  
 
 
 See the [open issues](https://github.com/EE-Drive/EE-Drive-Server/issues) for a list of proposed features (and known issues).
