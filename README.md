@@ -71,7 +71,7 @@ After installing the app, follow these steps
 
 ### Register a car
 
-By choosing a brand , model, and year . (These sections are necessary)
+By entering a brand , model, year, and engine displacement . (These sections are necessary)
 
 
  <img src="images/screenshot_Register.png" alt="register">
@@ -90,19 +90,19 @@ In Android 11 - confirm the requests, and fasten them in the settings so that th
       
  ### Choosing a car
   Choose your car from the list in the Main screen.Press start to confirm your choice.<br>
-   <img src="images/screenshot_Register.png" alt="register">
+   <img src="images/screenshot_choose.png" alt="register">
   
  ### Drive
 Make sure the obd device is working.<br>
 Choose youre OBD device by clicking the bluetooth button, the drive will be start automatically after succsfully connecting and receiving data from the obd .<br>
   at the end of the drive, press the stop button in order to confirm your drive to the server.<br>
   Note: if all permissions has been given like requested, the drive file will be created in your storage folder under the path "EE-Drive/Drives". <br>
-   <img src="images/screenshot_Register.png" alt="register">
+   <img src="images/screenshot_drive.png" alt="register">
 
   
   ### Car Details
   You can check your car properties, and watch your drive history by clicking the "Car details" button.<br>
-   <img src="images/screenshot_Register.png" alt="register">
+   <img src="images/screenshot_details.png" alt="register">
 
   
 
