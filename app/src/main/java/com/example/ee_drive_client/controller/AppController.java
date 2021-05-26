@@ -11,6 +11,7 @@ public class AppController {
     MainActivity mainView;
     DrivingController drivingController;
     String error="";
+
     public AppController(MainActivity mainView) throws IOException {
         drivingController=new DrivingController(mainView);
         this.mainView = mainView;

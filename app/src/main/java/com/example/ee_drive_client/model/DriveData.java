@@ -6,14 +6,18 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.ee_drive_client.controller.JsonHandler;
+import com.example.ee_drive_client.controller.SendToServer;
 import com.example.ee_drive_client.repositories.GlobalContextApplication;
 import com.example.ee_drive_client.repositories.SharedPrefHelper;
 import com.example.ee_drive_client.view.MainScreenFragment;
+import com.mashape.unirest.http.exceptions.UnirestException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,13 +25,14 @@ import java.util.Date;
 //import com.example.ee_drive_client.MainActivity;
 
 public class DriveData extends Activity {
-    String id;
+    public String id;
     public Boolean driveInProcess = false;
     public String timeAndDate;
     boolean isSentToServer = false;
     boolean driverAssist = false;
     CarType carType;
     private static DriveData instance;
+    Thread thread;
 
     public ArrayList<Point> points = new ArrayList<Point>();
 
@@ -181,6 +186,46 @@ public class DriveData extends Activity {
     }
 
 
+    public void writeData(DriveData driveData) throws IOException {
+        SendToServer sendToServer=new SendToServer();
+        Log.d("Data", "Writing data");
+        JSONObject jsonObjectToServer = driveData.toJsonSaveFile();
+        JSONObject jsonObjectTOFile = driveData.toJsonSaveFile();
+        JsonHandler jsonHandler = new JsonHandler(jsonObjectToServer);
+        jsonHandler.saveToFile(driveData.getTimeAndDate(), jsonObjectToServer);
+//        thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    sendToServer.sendDataTOExsistinDrive(jsonObjectToServer, driveData.getId());
+//                } catch (UnirestException | JSONException exception) {
+//                    exception.printStackTrace();
+//                }
+//            }
+//        });
+//        thread.start();
+    }
+
+    public void EndDrive() throws IOException {
+        SendToServer sendToServer=new SendToServer();
+        thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Log.d("SendId",getId());
+                    sendToServer.sendEndOfDriveFromFile(getTimeAndDate(),getId());
+                    resetData();
+                } catch (UnirestException | JSONException exception) {
+                    exception.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }
+
+
+
+
     public JSONObject toJsonServerAppendDrive() {
         JSONObject json = new JSONObject();
         try {
@@ -235,6 +280,10 @@ public class DriveData extends Activity {
 
         }
         return jsonArray;
+    }
+
+    public void updateCurrentCar() {
+        this.setCarType(new CarType(SharedPrefHelper.getInstance(GlobalContextApplication.getContext()).getBrand(), SharedPrefHelper.getInstance(GlobalContextApplication.getContext()).getModel(), SharedPrefHelper.getInstance(GlobalContextApplication.getContext()).getYear(),Integer.toString(SharedPrefHelper.getInstance(GlobalContextApplication.getContext()).getEngine())));
     }
 }
 

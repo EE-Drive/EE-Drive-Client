@@ -304,4 +304,7 @@ public class OBDHandler {
             break;
         }
     }
+    public void disconnect(){
+        closeSocket();
+    }
 }

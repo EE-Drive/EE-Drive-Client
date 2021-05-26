@@ -50,13 +50,14 @@ public class DrivingController {
     public DrivingController(MainActivity activity) throws IOException {
         driveData = DriveData.getInstance();
         obdHandler = new OBDHandler(activity);
-   //     gpsHandler = new GPSHandler(LocationServices.getSettingsClient(activity));
+        //     gpsHandler = new GPSHandler(LocationServices.getSettingsClient(activity));
         calculator = new Calculator();
         mainActivity = activity;
     }
 
 
     public void onStart(MainActivity view) {
+        driveData.updateCurrentCar();
         intent = new Intent(GlobalContextApplication.getContext(), DriveService.class);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -70,6 +71,7 @@ public class DrivingController {
             public void run() {
                 try {
                     driveData.setId(sendToServer.sendStartOfDriveToServerAndGetDriveId(jsonObjectToServer).getString("createdItemId"));
+                    Log.d("StartId",driveData.getId());
                 } catch (UnirestException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -97,7 +99,6 @@ public class DrivingController {
 
     public void onConnect(MainActivity view, Context context) {
         driveData.driveInProcess = true;
-        driveData.getRecordingData().postValue(true);
         obdHandler.connect(view, context);
         obdHandler.obdLiveData.observeForever(new Observer<OBDData>() {
             @Override
@@ -112,6 +113,7 @@ public class DrivingController {
                 if (driveData.getPointsSize() != 0) {
                     driveData.addInfoToLastPoint(obdData);
                     driveData.getSpeed().postValue(obdData.getSpeed());
+                    driveData.getRecordingData().postValue(true);
 
                     driveData.getFuel().postValue(obdData.getFuel());
                 }
@@ -122,35 +124,39 @@ public class DrivingController {
         });
     }
 
-    public void onStop() {
+    public void onStop() throws IOException {
+
         mainActivity.stopService(new Intent(GlobalContextApplication.getContext(), DriveService.class));
-        if (driveData.driveInProcess == true)
-            writeData(driveData);
-        driveData.resetData();
+        if (driveData.driveInProcess == true){
+            driveData.writeData(driveData);
+            driveData.EndDrive();
+            obdHandler.disconnect();
+        }
+   //     driveData.writeData(driveData);
         driveData.driveInProcess = false;
         driveData.getRecordingData().postValue(false);
-    //    gpsHandler.stopLocationChanged();
+        //    gpsHandler.stopLocationChanged();
     }
 
-    public void writeData(DriveData driveData) {
-
-        Log.d("Data", "Writing data");
-        JSONObject jsonObjectToServer = driveData.toJsonSaveFile();
-        JSONObject jsonObjectTOFile = driveData.toJsonSaveFile();
-        JsonHandler jsonHandler = new JsonHandler(jsonObjectToServer);
-        jsonHandler.saveToFile(driveData.getTimeAndDate(), jsonObjectToServer);
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    sendToServer.sendDataTOExsistinDrive(jsonObjectToServer, driveData.getId());
-                } catch (UnirestException | JSONException exception) {
-                    exception.printStackTrace();
-                }
-            }
-        });
-        thread.start();
-    }
+//    public void writeData(DriveData driveData) {
+//
+//        Log.d("Data", "Writing data");
+//        JSONObject jsonObjectToServer = driveData.toJsonSaveFile();
+//        JSONObject jsonObjectTOFile = driveData.toJsonSaveFile();
+//        JsonHandler jsonHandler = new JsonHandler(jsonObjectToServer);
+//        jsonHandler.saveToFile(driveData.getTimeAndDate(), jsonObjectToServer);
+//        thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    sendToServer.sendDataTOExsistinDrive(jsonObjectToServer, driveData.getId());
+//                } catch (UnirestException | JSONException exception) {
+//                    exception.printStackTrace();
+//                }
+//            }
+//        });
+//        thread.start();
+//    }
 
 
 }

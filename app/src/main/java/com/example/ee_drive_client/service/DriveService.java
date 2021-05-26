@@ -49,38 +49,40 @@ public class DriveService extends Service {
     final Handler handler = new Handler();
 
     public DriveService() throws IOException {
-        driveData=DriveData.getInstance();
+        driveData = DriveData.getInstance();
 //        obdHandler = new OBDHandler(GlobalContextApplication.getContext());
         gpsHandler = new GPSHandler(LocationServices.getSettingsClient(GlobalContextApplication.getContext()));
- //       calculator = new Calculator();
+        //       calculator = new Calculator();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Intent intent1=new Intent(this, MainActivity.class);
+        Intent intent1 = new Intent(this, MainActivity.class);
 
-        PendingIntent pendingIntent=PendingIntent.getActivity(this,0,intent1,0);
-         notification = new NotificationCompat.Builder(this,"ChannelId1")
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent1, 0);
+        notification = new NotificationCompat.Builder(this, "ChannelId1")
                 .setContentTitle("EE drive")
                 .setContentText("EE drive is running")
                 .setSmallIcon(R.mipmap.ic_launcher)
-               .build();
-        startForeground(1,notification);
-//        backgroudThread= new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        });
-        final int delay = 420000; // 1000 milliseconds == 1 second
+                .build();
+        startForeground(1, notification);
+        final int delay = 60000; // 1000 milliseconds == 1 second
         handler.postDelayed(new Runnable() {
             public void run() {
-          //         writeData(driveData);
+//                try {
+//                    driveData.writeData(driveData);
+//                } catch (IOException exception) {
+//                    exception.printStackTrace();
+//                }
                 if (driveData.driveInProcess == true) {
-                 writeData(driveData);
+                    try {
+                        driveData.writeData(driveData);
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
                 } else {
-            //        Toast.makeText(GlobalContextApplication.getContext(), "No drive in progress", Toast.LENGTH_SHORT).show();
+                    //        Toast.makeText(GlobalContextApplication.getContext(), "No drive in progress", Toast.LENGTH_SHORT).show();
                 }
                 handler.postDelayed(this, delay);
             }
@@ -93,7 +95,7 @@ public class DriveService extends Service {
                 String msg = "obsereved Location: " +
                         Double.toString(gps.getLatitude()) + "," +
                         Double.toString(gps.getLongitude());
-           //     Toast.makeText(GlobalContextApplication.getContext(), msg, Toast.LENGTH_SHORT).show();
+                //     Toast.makeText(GlobalContextApplication.getContext(), msg, Toast.LENGTH_SHORT).show();
                 Point pointCurrent = new Point(gps.getLatitude(), gps.getLongitude());
                 if (driveData.driveInProcess == true
                 ) {
@@ -104,16 +106,12 @@ public class DriveService extends Service {
                             driveData.points.add(pointCurrent);
                         }
                     }
-                }else{
+                } else {
                     gpsHandler.gpsData.removeObserver(this);
                 }
             }
 
         });
-
-
-
-
     }
 
 
@@ -122,15 +120,14 @@ public class DriveService extends Service {
         createNotificationChannel();
 
 
-
         return START_STICKY;
     }
 
     private void createNotificationChannel() {
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(
-                    "ChannelId1","Foregound notification", NotificationManager.IMPORTANCE_DEFAULT);
-             manager= getSystemService(NotificationManager.class);
+                    "ChannelId1", "Foregound notification", NotificationManager.IMPORTANCE_DEFAULT);
+            manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(notificationChannel);
 
         }
@@ -144,7 +141,7 @@ public class DriveService extends Service {
 
     @Override
     public void onDestroy() {
-     //   gpsHandler.gpsData.removeObserver(gpsObserver);
+        //   gpsHandler.gpsData.removeObserver(gpsObserver);
         stopForeground(true);
         gpsHandler.stopLocationChanged();
 
@@ -152,23 +149,23 @@ public class DriveService extends Service {
         super.onDestroy();
     }
 
-    public void writeData(DriveData driveData) {
-        Log.d("Data", "Writing data");
-        JSONObject jsonObjectToServer = driveData.toJsonSaveFile();
-        JSONObject jsonObjectTOFile = driveData.toJsonSaveFile();
-        JsonHandler jsonHandler = new JsonHandler(jsonObjectToServer);
-        jsonHandler.saveToFile(driveData.getTimeAndDate(), jsonObjectToServer);
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    sendToServer.sendDataTOExsistinDrive(jsonObjectToServer, driveData.getId());
-                } catch (UnirestException | JSONException exception) {
-                    exception.printStackTrace();
-                }
-            }
-        });
-        thread.start();
-    }
+//    public void writeData(DriveData driveData) {
+//        Log.d("Data", "Writing data");
+//        JSONObject jsonObjectToServer = driveData.toJsonSaveFile();
+//        JSONObject jsonObjectTOFile = driveData.toJsonSaveFile();
+//        JsonHandler jsonHandler = new JsonHandler(jsonObjectToServer);
+//        jsonHandler.saveToFile(driveData.getTimeAndDate(), jsonObjectToServer);
+//        thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    sendToServer.sendDataTOExsistinDrive(jsonObjectToServer, driveData.getId());
+//                } catch (UnirestException | JSONException exception) {
+//                    exception.printStackTrace();
+//                }
+//            }
+//        });
+//        thread.start();
+//    }
 
 }

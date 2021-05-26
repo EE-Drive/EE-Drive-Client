@@ -60,7 +60,11 @@ public class RecordingScreenFragment extends Fragment {
             public void onClick(View v) {
                 //TODO: remove observers
                 driveData.getSpeed().removeObservers(getViewLifecycleOwner());
-                drivingController.onStop();
+                try {
+                    drivingController.onStop();
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
                 Navigation.findNavController(view).navigate(R.id.action_recording_to_main);
             }
 

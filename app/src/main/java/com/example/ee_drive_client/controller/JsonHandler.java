@@ -78,7 +78,7 @@ public class JsonHandler {
     }
 
 
-    public JSONObject readFromFile(String fileName) throws JSONException {
+    public static JSONObject readFromFile(String fileName) throws JSONException {
         File f1 = new File(Environment.getExternalStorageDirectory() + "/" + "EE-Drive" + "/" + "Drives", fileName + ".json" );
         StringBuilder text = new StringBuilder();
         BufferedReader br = null;

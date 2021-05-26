@@ -53,16 +53,8 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 public class MainActivity extends AppCompatActivity {
     NavController navController;
     AppController mainController;
-    Context context;
-    Thread serverThread;
-    private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
-    private long FASTEST_INTERVAL = 2000; /* 2 sec */
-    private LocationRequest mLocationRequest;
-
     public MainActivity() throws IOException {
     }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

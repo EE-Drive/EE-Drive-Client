@@ -72,15 +72,12 @@ public class GPSHandler {
         String msg = "Updated Location: " +
                 Double.toString(lastLocation.getLatitude()) + "," +
                 Double.toString(lastLocation.getLongitude());
-        // You can now create a LatLng Object for use with maps
-        // LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
        // Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show();
         GPS gpsLocation=new GPS();
         gpsLocation.setLongitude(lastLocation.getLongitude());
         gpsLocation.setLatitude(lastLocation.getLatitude());
 
         gpsData.postValue(gpsLocation);
-      //  Log.d("TAG", msg);
 
     }
 

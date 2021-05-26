@@ -26,6 +26,7 @@ import com.example.ee_drive_client.controller.AppController;
 import com.example.ee_drive_client.controller.DrivingController;
 import com.example.ee_drive_client.controller.SendToServer;
 import com.example.ee_drive_client.model.CarType;
+import com.example.ee_drive_client.model.DriveHistory;
 import com.example.ee_drive_client.model.OBDData;
 import com.example.ee_drive_client.repositories.GlobalContextApplication;
 import com.example.ee_drive_client.repositories.RepositoryCar;
@@ -44,8 +45,7 @@ public class MainScreenFragment extends Fragment {
     DrivingController drivingController;
     UUID id = UUID.randomUUID();
     String ID = id.toString();
-    ArrayList<CarType> response=new ArrayList<>();
-    ArrayList<CarType> carsList=new ArrayList<>();
+    ArrayList<CarType> response = new ArrayList<>();
     private TextView isConnected, textViewDebug;
     private RepositoryCar repo;
     SendToServer sendToServer = new SendToServer();
@@ -54,7 +54,9 @@ public class MainScreenFragment extends Fragment {
     String brand;
     String model;
     String engineD;
-    public MainScreenFragment() throws IOException {
+    DriveHistory driveHistory = DriveHistory.getInstance();
+
+    public MainScreenFragment() throws IOException, JSONException, UnirestException {
         // Required empty public constructor
     }
 
@@ -94,6 +96,13 @@ public class MainScreenFragment extends Fragment {
             }
         });
 
+        Button carDetailsBtn = view.findViewById(R.id.main_carsDetails_btn);
+        carDetailsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(view).navigate(R.id.action_MainScreenFragment_to_carDetailsFragment);
+            }
+        });
 
         Spinner mainSpinner = (Spinner) view.findViewById(R.id.main_spinner);
 
@@ -102,37 +111,41 @@ public class MainScreenFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String arr[] = parent.getItemAtPosition(position).toString().split(" ");
-                 brand=arr[0];
+                brand = arr[0];
                 SharedPrefHelper.getInstance(getContext()).storeBrand(brand);
 
-                if(arr.length>1){
-                     model=arr[1];
-                     SharedPrefHelper.getInstance(getContext()).storeModel(model);
-                 }
-                 if(arr.length>2){
-                     year=arr[2];
-                     SharedPrefHelper.getInstance(getContext()).storeYear(year);
-                 }
-                 engineD="1300";
-                if(arr.length>3){
-                    engineD=arr[3];
+                if (arr.length > 1) {
+                    model = arr[1];
+                    SharedPrefHelper.getInstance(getContext()).storeModel(model);
                 }
-                Toast.makeText(GlobalContextApplication.getContext(),"Car selected :"+brand,Toast.LENGTH_LONG).show();
+                if (arr.length > 2) {
+                    year = arr[2];
+                    SharedPrefHelper.getInstance(getContext()).storeYear(year);
+                }
+                engineD = "1300";
+                if (arr.length > 3) {
+                    engineD = arr[3];
+                }
+                Toast.makeText(GlobalContextApplication.getContext(), "Car selected :" + brand, Toast.LENGTH_LONG).show();
 
-                serverThread=new Thread(new Runnable() {
+                serverThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                       String request=sendToServer.addCarTypeToServerReceiveId(new CarType(brand,model,year,engineD).toJsonAddCarTypeToServer());
+                            String request = sendToServer.addCarTypeToServerReceiveId(new CarType(brand, model, year, engineD).toJsonAddCarTypeToServer());
+                            driveHistory.updateDriveHistory();
+                            driveHistory.setDriveHistories(driveHistory.getDriveHistories());
                         } catch (UnirestException e) {
                             //repo.insertCarDbOnly(new CarType(brand,model,year,engineD));
                             e.printStackTrace();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                        } catch (IOException exception) {
+                            exception.printStackTrace();
                         }
                     }
                 });
-              serverThread.start();
+                serverThread.start();
 
             }
 
@@ -154,7 +167,7 @@ public class MainScreenFragment extends Fragment {
                 try {
                     JSONArray jsonArray = new JSONArray();
                     response = sendToServer.getAllCarTypesFromServer();
-                    Log.d("Car",sendToServer.getAllCarTypesFromServer().toString());
+                    Log.d("Car", sendToServer.getAllCarTypesFromServer().toString());
                     for (CarType car : response
                     ) {
                         repo.insertCarDbOnly(car);
