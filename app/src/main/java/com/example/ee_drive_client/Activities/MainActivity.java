@@ -67,9 +67,11 @@ public class MainActivity extends AppCompatActivity {
             exception.printStackTrace();
         }
         setContentView(R.layout.activity_main);
+        //Manifest Permissions
         requestPermissions();
         //Keeps Screen On
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         navController = Navigation.findNavController(this, R.id.mainactivity_navHost);
         NavigationUI.setupActionBarWithNavController(this, navController);
 
