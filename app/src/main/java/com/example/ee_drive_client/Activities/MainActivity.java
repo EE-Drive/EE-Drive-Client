@@ -42,6 +42,7 @@ import com.google.android.gms.tasks.Task;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.List;
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void startLocationUpdates() {
+    private void startLocationUpdates() throws IOException, UnirestException, JSONException {
        mainController.onStart(this);
     }
 

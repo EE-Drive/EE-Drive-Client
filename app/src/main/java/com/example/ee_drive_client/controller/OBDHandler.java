@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class OBDHandler {
+    //Variables
     private boolean mIsConnected = false;
     private BluetoothAdapter mBluetoothAdapter;
     Context mContext;
@@ -81,6 +82,7 @@ public class OBDHandler {
         mContext = context;
         this.activity = view;
         Log.d("Tag", "connect: ");
+
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         ArrayList deviceStrs = new ArrayList();
         final ArrayList devices = new ArrayList();
@@ -232,7 +234,7 @@ public class OBDHandler {
             }
         }
     }
-    MutableLiveData<OBDData> obdLiveData = new MutableLiveData<OBDData>();
+   public MutableLiveData<OBDData> obdLiveData = new MutableLiveData<OBDData>();
 
     public void startRecording() {
         mStop = false;

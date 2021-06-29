@@ -10,6 +10,7 @@ import androidx.room.Query;
 import com.example.ee_drive_client.model.CarType;
 import com.example.ee_drive_client.model.Route;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -17,11 +18,11 @@ import java.util.List;
 public interface IRouteDao {
 
 
-//    @Insert(onConflict = OnConflictStrategy.IGNORE)
-//    void insertRoute(Route route);
-//
-//    @Query("SELECT * FROM Route")
-//    List<Route> getAllRoutes();
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    void insertRoute(Route route);
+
+    @Query("SELECT * FROM Route")
+    List<Route> getAllRoutes();
 
 
 

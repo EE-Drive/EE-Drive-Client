@@ -1,14 +1,21 @@
 package com.example.ee_drive_client.model;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class Point {
-    double lat = 0f;
-    double lang = 0f;
+
+    //Variables
+    private double lat = 0f, lang = 0f;
     public ArrayList<Double> fuelCons = new ArrayList<Double>();
     public ArrayList<Integer> speeds = new ArrayList<Integer>();
+
+    public Point(double lat, double lang) {
+        this.lat = lat;
+        this.lang = lang;
+    }
 
     public double getLat() {
         return lat;
@@ -42,11 +49,6 @@ public class Point {
         this.speeds = speeds;
     }
 
-    public Point(double lat, double lang) {
-        this.lat = lat;
-        this.lang = lang;
-    }
-
     public void append(double speed) {
         this.fuelCons.add(speed);
     }
@@ -57,7 +59,7 @@ public class Point {
 
     @Override
     public String toString() {
-        return "{"+
+        return "{" +
                 "lat:" + lat +
                 ", long:" + lang +
                 ", fuelCons:" + fuelCons +
@@ -70,7 +72,7 @@ public class Point {
         try {
 
             json.put("lat", Double.toString(lat));
-            json.put("long",Double.toString(lang));
+            json.put("long", Double.toString(lang));
             json.put("fuelCons", fuelCons);
             json.put("speeds", speeds);
 
@@ -80,6 +82,7 @@ public class Point {
         }
         return json;
     }
+
     public void appendFuel(double speed) {
         this.fuelCons.add(speed);
     }

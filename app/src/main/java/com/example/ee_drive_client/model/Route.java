@@ -10,48 +10,22 @@ import org.json.JSONObject;
 @Entity(tableName = "Route")
 
 public class Route {
+
+    //Variables
     @NonNull
     @PrimaryKey
-    String _id;
-//    routePoint bl, br, tl, tr;
+    private String _id;
+    public String bl, br, tl, tr;
 
+    public Route() {
+    }
 
-//    public Route(@NonNull JSONObject route) throws JSONException {
-//        this._id = route.getString("_id");
-//        this.bl = new routePoint(route.getJSONObject("bL").getString("lat"), route.getJSONObject("bL").getString("long"));
-//        this.br = new routePoint(route.getJSONObject("bR").getString("lat"), route.getJSONObject("bR").getString("long"));
-//        this.tl = new routePoint(route.getJSONObject("tL").getString("lat"), route.getJSONObject("tL").getString("long"));
-//        this.tr = new routePoint(route.getJSONObject("tR").getString("lat"), route.getJSONObject("tR").getString("long"));
-//
-//    }
-
-    private class routePoint {
-
-        double _lat;
-        double _long;
-
-        public routePoint(String lat, String _long) {
-            this._lat = Double.parseDouble(lat);
-            ;
-            this._long = Double.parseDouble(_long);
-        }
-
-        public double get_lat() {
-            return _lat;
-        }
-
-        public void set_lat(double _lat) {
-            this._lat = _lat;
-        }
-
-        public double get_long() {
-            return _long;
-        }
-
-        public void set_long(double _long) {
-            this._long = _long;
-        }
-
+    public Route(@NonNull JSONObject route) throws JSONException {
+        this._id = route.getString("_id");
+        this.bl = route.getString("bL");
+        this.br = route.getString("bR");
+        this.tl = route.getString("tL");
+        this.tr = route.getString("tR");
 
     }
 

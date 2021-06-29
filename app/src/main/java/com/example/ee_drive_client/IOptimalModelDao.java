@@ -14,10 +14,18 @@ import java.util.List;
 
 public interface  IOptimalModelDao {
 
-//    @Insert(onConflict = OnConflictStrategy.IGNORE)
-//    void insertModel(OptimalModel optimalModel);
-//
-//    @Query("SELECT * FROM OptimalModel")
-//    List<Route> getAllOptimalModels();
+    @Query("SELECT vertices FROM OptimalModel where `carTypeId`=:carTypeId and `routeId`=:routeId")
+    String getOptimalModelVerticesById(String routeId, String carTypeId) ;
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    void insertModel(OptimalModel optimalModel);
+
+    @Query("SELECT * FROM OptimalModel")
+    List<Route> getAllOptimalModels();
+
+    @Query("SELECT edges FROM OptimalModel where `carTypeId`=:carTypeId and `routeId`=:routeId")
+    String getOptimalModelEdgesById(String routeId, String carTypeId);
+
+    @Query("SELECT _id FROM OptimalModel where `carTypeId`=:carTypeId and `routeId`=:routeId")
+    String getOptimalModelId(String routeId, String carTypeId);
 }

@@ -12,11 +12,10 @@ import java.util.ArrayList;
 
 public class DriveHistory {
 
-    String driveId;
-    String driveTime;
-    String driveAssist;
+    //Variables
+    private String driveId, driveTime, driveAssist;
     private static DriveHistory instance;
-    ArrayList<DriveHistory> driveHistories;
+    private ArrayList<DriveHistory> driveHistories;
 
     public static DriveHistory getInstance() throws IOException, UnirestException, JSONException {
         if (instance == null)
@@ -25,7 +24,7 @@ public class DriveHistory {
     }
 
 
-    public DriveHistory(String driveId, String driveTime, String driveAssist)  {
+    public DriveHistory(String driveId, String driveTime, String driveAssist) {
         this.driveId = driveId;
         this.driveTime = driveTime;
         this.driveAssist = driveAssist;

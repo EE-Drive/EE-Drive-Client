@@ -2,9 +2,8 @@ package com.example.ee_drive_client.model;
 
 public class GPS {
 
-    private double altitude= 0f;
-    private double longitude= 0f;
-    private double latitude=0f;
+    //Variables
+    private double altitude = 0f, longitude = 0f, latitude = 0f;
 
     public double getLatitude() {
         return latitude;
@@ -37,7 +36,8 @@ public class GPS {
                 ", longitude=" + longitude +
                 '}';
     }
-    public GPS get(){
+
+    public GPS get() {
         return this;
     }
 

@@ -28,47 +28,60 @@ import java.io.IOException;
 
 public class AddNewCarFragment extends Fragment {
 
-
+    //Variables
     private RepositoryCar repositoryCar;
+    private Thread serverThread;
+    private EditText editTextYear, editTextModel, editTextBrand, editTextEngine;
+    private TextView errorTxt;
+    private Button addBtn;
+    private String model, brand, year, engine;
+    private RepositoryCar.ERROR_INPUT input;
 
-    Thread serverThread;
+    //Constructors
     public AddNewCarFragment() {
         // Required empty public constructor
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initializeVariables(view);
+        initializeEventListeners();
+
+    }
+
+
+    private void initializeVariables(View view) {
         try {
             repositoryCar = new RepositoryCar(getContext());
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-
-
-        EditText editTextYear = view.findViewById(R.id.add_year_EditTxt);
-        EditText editTextModel = view.findViewById(R.id.add_model_editTxt);
-        EditText editTextBrand = view.findViewById(R.id.add_brand_editTxt);
-        EditText editTextEngine=view.findViewById(R.id.add_engine_editTxt);
-        TextView errorTxt =view.findViewById(R.id.add_error_txt);
+        editTextYear = view.findViewById(R.id.add_year_EditTxt);
+        editTextModel = view.findViewById(R.id.add_model_editTxt);
+        editTextBrand = view.findViewById(R.id.add_brand_editTxt);
+        editTextEngine = view.findViewById(R.id.add_engine_editTxt);
+        errorTxt = view.findViewById(R.id.add_error_txt);
         errorTxt.setVisibility(View.INVISIBLE);
-        Button addBtn = view.findViewById(R.id.add_add_btn);
+        addBtn = view.findViewById(R.id.add_add_btn);
 
+
+    }
+
+    private void initializeEventListeners() {
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 errorTxt.setVisibility(View.INVISIBLE);
-                String model = editTextModel.getText().toString();
-                String brand = editTextBrand.getText().toString();
-                String year = editTextYear.getText().toString();
-                String engine=editTextEngine.getText().toString();
-                RepositoryCar.ERROR_INPUT input= repositoryCar.isValid(model,brand,year,engine);
-                switch (input){
+                model = editTextModel.getText().toString();
+                brand = editTextBrand.getText().toString();
+                year = editTextYear.getText().toString();
+                engine = editTextEngine.getText().toString();
+                input = repositoryCar.isValid(model, brand, year, engine);
+                switch (input) {
                     case VALID:
-                        CarType car =new CarType(brand,model,year,engine);
-
-                        serverThread=new Thread(new Runnable() {
+                        CarType car = new CarType(brand, model, year, engine);
+                        serverThread = new Thread(new Runnable() {
                             @Override
                             public void run() {
                                 try {
@@ -83,7 +96,6 @@ public class AddNewCarFragment extends Fragment {
                         });
                         serverThread.start();
                         Toast.makeText(getContext(), "Added car", Toast.LENGTH_SHORT).show();
-             //           Navigation.findNavController(view).navigate(R.id.action_AddNewCarFragment_to_MainScreenFragment);
                         break;
                     case MISS_FIELDS:
                         errorTxt.setText("Fill all fields");
@@ -94,12 +106,9 @@ public class AddNewCarFragment extends Fragment {
                         errorTxt.setVisibility(View.VISIBLE);
                         break;
                 }
-
-                }
+            }
 
         });
-
-
     }
 
     @Override

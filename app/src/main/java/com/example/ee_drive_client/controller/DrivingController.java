@@ -2,6 +2,7 @@ package com.example.ee_drive_client.controller;
 
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.camera2.CameraAccessException;
 import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
@@ -33,19 +34,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DrivingController {
-    GPSHandler gpsHandler;
-    OBDHandler obdHandler;
-    DriveData driveData;
-    SendToServer sendToServer = new SendToServer();
-    Thread thread;
-    Thread startThread;
-    final Handler handler = new Handler();
-    Calculator calculator;
-    Double currentFuel;
-    JSONObject response;
-    String driveId;
-    MainActivity mainActivity;
-    Intent intent;
+
+    //Variables
+    private GPSHandler gpsHandler;
+    private OBDHandler obdHandler;
+    private DriveData driveData;
+    private SendToServer sendToServer = new SendToServer();
+    private Thread thread,startThread;
+    private final Handler handler = new Handler();
+    private Calculator calculator;
+    private Double currentFuel;
+    private JSONObject response;
+    private String driveId;
+    private MainActivity mainActivity;
+    public OptimalModelHandler optimalModelHandler;
+    private Intent intent;
 
     public DrivingController(MainActivity activity) throws IOException {
         driveData = DriveData.getInstance();
@@ -54,18 +57,21 @@ public class DrivingController {
         calculator = new Calculator();
         mainActivity = activity;
     }
+    public  void getStartingPoint() throws IOException, JSONException {
+        optimalModelHandler.getStartingPointAndCreateModel();
+        //TODO: move self to onConnect
 
-
+    }
     public void onStart(MainActivity view) {
         driveData.updateCurrentCar();
         intent = new Intent(GlobalContextApplication.getContext(), DriveService.class);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mainActivity.startForegroundService(intent);
         } else {
             mainActivity.startService(intent);
         }
         JSONObject jsonObjectToServer = driveData.toJsonServerStartOfDrive();
+
         startThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -80,8 +86,6 @@ public class DrivingController {
             }
         });
         startThread.start();
-
-
 //        final int delay = 420000; // 1000 milliseconds == 1 second
 //        handler.postDelayed(new Runnable() {
 //            public void run() {
@@ -98,41 +102,52 @@ public class DrivingController {
 
 
     public void onConnect(MainActivity view, Context context) {
+        startThread.interrupt();
         driveData.driveInProcess = true;
-        obdHandler.connect(view, context);
-        obdHandler.obdLiveData.observeForever(new Observer<OBDData>() {
+        mainActivity.runOnUiThread(new Runnable() {
             @Override
-            public void onChanged(OBDData obdData) {
-                Double fuel;
-                fuel = calculator.calcFuel(calculator.calcMaf(obdData.getRpm(), obdData.getmMap(), obdData.getmIat(), view));
-                if (currentFuel != fuel) {
-                    obdData.setFuel(fuel);
-                    currentFuel = fuel;
-                    Toast.makeText(GlobalContextApplication.getContext(), Double.toString(fuel), Toast.LENGTH_LONG);
-                }
-                if (driveData.getPointsSize() != 0) {
-                    driveData.addInfoToLastPoint(obdData);
-                    driveData.getSpeed().postValue(obdData.getSpeed());
-                    driveData.getRecordingData().postValue(true);
-
-                    driveData.getFuel().postValue(obdData.getFuel());
-                }
-                if (driveData.driveInProcess == false) {
-                    obdHandler.obdLiveData.removeObserver(this);
-                }
+            public void run() {
+                obdHandler.connect(view, context);
+                obdHandler.obdLiveData.observeForever(new Observer<OBDData>() {
+                    @Override
+                    public void onChanged(OBDData obdData) {
+                        Double fuel;
+                        fuel = calculator.calcFuel(calculator.calcMaf(obdData.getRpm(), obdData.getmMap(), obdData.getmIat(), view));
+                        if (currentFuel != fuel) {
+                            obdData.setFuel(fuel);
+                            currentFuel = fuel;
+                            Toast.makeText(GlobalContextApplication.getContext(), Double.toString(fuel), Toast.LENGTH_LONG);
+                        }
+                        if (driveData.getPointsSize() != 0) {
+                            driveData.addInfoToLastPoint(obdData);
+                            driveData.getSpeed().postValue(obdData.getSpeed());
+                            driveData.getRecordingData().postValue(true);
+                            driveData.getFuel().postValue(obdData.getFuel());
+                        }
+                        if (driveData.driveInProcess == false) {
+                            obdHandler.obdLiveData.removeObserver(this);
+                        }
+                    }
+                });
             }
         });
+
     }
 
     public void onStop() throws IOException {
-
         mainActivity.stopService(new Intent(GlobalContextApplication.getContext(), DriveService.class));
         if (driveData.driveInProcess == true){
             driveData.writeData(driveData);
             driveData.EndDrive();
+            if(obdHandler!=null)
             obdHandler.disconnect();
+            else{
+                obdHandler=new OBDHandler(mainActivity);
+                obdHandler.disconnect();
+            }
         }
-   //     driveData.writeData(driveData);
+
+        //     driveData.writeData(driveData);
         driveData.driveInProcess = false;
         driveData.getRecordingData().postValue(false);
         //    gpsHandler.stopLocationChanged();

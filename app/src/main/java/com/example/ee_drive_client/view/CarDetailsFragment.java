@@ -29,79 +29,76 @@ import java.util.ArrayList;
 
 public class CarDetailsFragment extends Fragment {
 
-    private TextView modelTxt;
-    private TextView brandTxt;
-    private TextView yearTxt;
-    private TextView engineTxt;
-    private TextView countTxt;
-    SharedPrefHelper sharedPrefHelper;
+    //Variables
+    private TextView modelTxt, brandTxt, yearTxt, engineTxt, countTxt;
+    private SharedPrefHelper sharedPrefHelper;
     private RepositoryCar repositoryCar;
-    ArrayList<DriveHistory> driveHistories;
-
-
+    private ArrayList<DriveHistory> driveHistories;
+    private TableLayout tableLayout;
+    private int PADDING = 10, TOP_PADDING = 10, FONT_SIZE = 3;
+    private Thread thread;
+    private TableRow tableRow;
 
     public CarDetailsFragment() {
         // Required empty public constructor
     }
 
 
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        try {
-            repositoryCar = new RepositoryCar(getContext());
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
+
         View view = inflater.inflate(R.layout.fragment_car_details, container, false);
+        initializeVariables(view);
+        initializeData(view);
+        return view;
+    }
+
+
+    private void initializeVariables(View view) {
         sharedPrefHelper = SharedPrefHelper.getInstance(GlobalContextApplication.getContext());
         driveHistories = new ArrayList<>();
         modelTxt = view.findViewById(R.id.details_txt_model);
         brandTxt = view.findViewById(R.id.details_txt_brand);
         yearTxt = view.findViewById(R.id.details_txt_year);
         engineTxt = view.findViewById(R.id.details_txt_engine);
-        countTxt=view.findViewById(R.id.details_txt_count);
+        countTxt = view.findViewById(R.id.details_txt_count);
         modelTxt.setText("Model: " + sharedPrefHelper.getModel());
         brandTxt.setText("Brand: " + sharedPrefHelper.getBrand());
         yearTxt.setText("Year: " + sharedPrefHelper.getYear());
         engineTxt.setText("Engine: " + sharedPrefHelper.getEngine());
+        try {
+            repositoryCar = new RepositoryCar(getContext());
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
 
+    private void initializeData(View view) {
         try {
             addHistoryTable(view);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnirestException | IOException e) {
+        } catch (UnirestException | IOException | JSONException e) {
             e.printStackTrace();
         }
-
-
-        // Inflate the layout for this fragment
-        return view;
     }
 
 
     public void addHistoryTable(View view) throws JSONException, UnirestException, IOException {
-        TableLayout tableLayout = view.findViewById(R.id.details_table);
-        int PADDING = 10, TOP_PADDING = 10, FONT_SIZE = 3;
-        TableRow tableRow = new TableRow(getContext());
-
-        Thread thread = new Thread(new Runnable() {
+        tableLayout = view.findViewById(R.id.details_table);
+        tableRow = new TableRow(getContext());
+        thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     driveHistories = repositoryCar.getCarHistory();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (UnirestException e) {
+                } catch (UnirestException | JSONException e) {
                     e.printStackTrace();
                 }
                 Log.d("response", driveHistories.toString());
             }
         });
         thread.start();
+
         //Table Headers
         TextView tv0 = new TextView(getContext());
         tv0.setText("Drive Id");
@@ -114,11 +111,6 @@ public class CarDetailsFragment extends Fragment {
         tv1.setGravity(View.TEXT_ALIGNMENT_GRAVITY);
         tv1.setPadding(PADDING, TOP_PADDING, PADDING, TOP_PADDING);
         tableRow.addView(tv1);
-//        TextView tv2 = new TextView(getContext());
-//        tv2.setText("Drive Assist");
-//        tv2.setTextColor(Color.BLACK);
-//        tv2.setPadding(PADDING, TOP_PADDING, PADDING, TOP_PADDING);
-//        tableRow.addView(tv2);
         tableRow.setBackground(new ColorDrawable(Color.parseColor("#80485CCF")));
         tableLayout.addView(tableRow);
         countTxt.setText("Drives Number: " + DriveHistory.getInstance().getDriveHistories().size());
@@ -128,24 +120,16 @@ public class CarDetailsFragment extends Fragment {
             TableRow driveRow = new TableRow(getContext());
             TextView idText = new TextView(getContext());
             TextView timeText = new TextView(getContext());
-        //    TextView assistText = new TextView(getContext());
             idText.setText(driveHistory.getDriveId());
             timeText.setText(driveHistory.getDriveTime());
-         //   assistText.setText(driveHistory.getDriveAssist());
             idText.setTextColor(Color.BLACK);
             timeText.setTextColor(Color.BLACK);
-          //  assistText.setTextColor(Color.BLACK);
             idText.setPadding(PADDING + 50, TOP_PADDING, PADDING, TOP_PADDING);
             timeText.setPadding(PADDING, TOP_PADDING, PADDING, TOP_PADDING);
-          //  assistText.setPadding(PADDING, TOP_PADDING, PADDING, TOP_PADDING);
             driveRow.addView(idText);
             driveRow.addView(timeText);
-        //    driveRow.addView(assistText);
             tableLayout.addView(driveRow);
-
-
         }
-
 
     }
 }

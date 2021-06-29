@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/MainScreenFragment"
         android:name="com.example.ee_drive_client.view.MainScreenFragment"
-        android:label="Main "
+        android:label="Main"
         tools:layout="@layout/fragment_main_screen">
         <action
             android:id="@+id/action_main_to_recording"
@@ -29,6 +29,9 @@
             android:id="@+id/action_recording_to_main"
             app:popUpTo="@id/MainScreenFragment"
             app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_recording_to_assist"
+            app:destination="@id/assistFragment" />
     </fragment>
     <fragment
         android:id="@+id/firstScreenFragment"
@@ -54,4 +57,13 @@
         android:name="com.example.ee_drive_client.view.CarDetailsFragment"
         android:label="Car Details"
         tools:layout="@layout/fragment_car_details" />
+    <fragment
+        android:id="@+id/assistFragment"
+        android:name="com.example.ee_drive_client.view.AssistFragment"
+        android:label="Assist"
+        tools:layout="@layout/fragment_assist" >
+        <action
+            android:id="@+id/action_assist_to_recording"
+            app:destination="@id/recordingScreenFragment" />
+    </fragment>
 </navigation>

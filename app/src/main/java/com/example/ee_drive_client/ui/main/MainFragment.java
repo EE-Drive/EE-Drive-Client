@@ -16,6 +16,7 @@ import com.example.ee_drive_client.R;
 
 public class MainFragment extends Fragment {
 
+    //Variables
     private MainViewModel mViewModel;
 
     public static MainFragment newInstance() {

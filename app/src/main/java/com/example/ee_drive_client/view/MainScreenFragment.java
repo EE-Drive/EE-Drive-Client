@@ -1,24 +1,18 @@
 package com.example.ee_drive_client.view;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.Navigation;
-import androidx.room.RoomDatabase;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.ee_drive_client.Activities.MainActivity;
 import com.example.ee_drive_client.R;
@@ -27,8 +21,6 @@ import com.example.ee_drive_client.controller.DrivingController;
 import com.example.ee_drive_client.controller.SendToServer;
 import com.example.ee_drive_client.model.CarType;
 import com.example.ee_drive_client.model.DriveHistory;
-import com.example.ee_drive_client.model.OBDData;
-import com.example.ee_drive_client.repositories.GlobalContextApplication;
 import com.example.ee_drive_client.repositories.RepositoryCar;
 import com.example.ee_drive_client.repositories.SharedPrefHelper;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -38,23 +30,20 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class MainScreenFragment extends Fragment {
-    AppController mainController;
-    DrivingController drivingController;
-    UUID id = UUID.randomUUID();
-    String ID = id.toString();
-    ArrayList<CarType> response = new ArrayList<>();
-    private TextView isConnected, textViewDebug;
+
+    //Variables
+    private AppController mainController;
+    private DrivingController drivingController;
+    private ArrayList<CarType> response = new ArrayList<>();
     private RepositoryCar repo;
-    SendToServer sendToServer = new SendToServer();
-    Thread serverThread;
-    String year;
-    String brand;
-    String model;
-    String engineD;
-    DriveHistory driveHistory = DriveHistory.getInstance();
+    private SendToServer sendToServer = new SendToServer();
+    private Thread serverThread;
+    private String year,brand,model,engineD;
+    private Button startBtn,endBtn,carDetailsBtn;
+    private Spinner mainSpinner;
+    private DriveHistory driveHistory;
 
     public MainScreenFragment() throws IOException, JSONException, UnirestException {
         // Required empty public constructor
@@ -65,19 +54,38 @@ public class MainScreenFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_main_screen, container, false);
+        initializeVariables(view);
+        initializeEventListeners(view);
+        initializeData(view);
+
+        return view;
+    }
+
+    private void initializeData(View view) {
+        mainSpinner.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, getAllCarsFromServer()));
+
+    }
+
+
+    private void initializeVariables(View view) {
         try {
             repo = new RepositoryCar(getContext());
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        try {
             drivingController = new DrivingController((MainActivity) getActivity());
             mainController = new AppController((MainActivity) getActivity());
-        } catch (IOException exception) {
+            mainController.initializeModelsAndRoutes();
+            driveHistory = DriveHistory.getInstance();
+        } catch (IOException | UnirestException | JSONException exception) {
             exception.printStackTrace();
         }
-        Button startBtn = view.findViewById(R.id.main_start_btn);
-        textViewDebug = view.findViewById(R.id.textViewDebug);
+        startBtn = view.findViewById(R.id.main_start_btn);
+        endBtn = view.findViewById(R.id.main_EndDrive_btn);
+        carDetailsBtn = view.findViewById(R.id.main_carsDetails_btn);
+        mainSpinner = (Spinner) view.findViewById(R.id.main_spinner);
+
+    }
+
+
+    private void initializeEventListeners(View view) {
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,7 +95,6 @@ public class MainScreenFragment extends Fragment {
 
             }
         });
-        Button endBtn = view.findViewById(R.id.main_EndDrive_btn);
         endBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,24 +103,19 @@ public class MainScreenFragment extends Fragment {
             }
         });
 
-        Button carDetailsBtn = view.findViewById(R.id.main_carsDetails_btn);
         carDetailsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(view).navigate(R.id.action_MainScreenFragment_to_carDetailsFragment);
             }
         });
-
-        Spinner mainSpinner = (Spinner) view.findViewById(R.id.main_spinner);
-
-        mainSpinner.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, getAllCarsFromServer()));
         mainSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
                 String arr[] = parent.getItemAtPosition(position).toString().split(" ");
                 brand = arr[0];
                 SharedPrefHelper.getInstance(getContext()).storeBrand(brand);
-
                 if (arr.length > 1) {
                     model = arr[1];
                     SharedPrefHelper.getInstance(getContext()).storeModel(model);
@@ -126,7 +128,6 @@ public class MainScreenFragment extends Fragment {
                 if (arr.length > 3) {
                     engineD = arr[3];
                 }
-                Toast.makeText(GlobalContextApplication.getContext(), "Car selected :" + brand, Toast.LENGTH_LONG).show();
 
                 serverThread = new Thread(new Runnable() {
                     @Override
@@ -135,17 +136,13 @@ public class MainScreenFragment extends Fragment {
                             String request = sendToServer.addCarTypeToServerReceiveId(new CarType(brand, model, year, engineD).toJsonAddCarTypeToServer());
                             driveHistory.updateDriveHistory();
                             driveHistory.setDriveHistories(driveHistory.getDriveHistories());
-                        } catch (UnirestException e) {
-                            //repo.insertCarDbOnly(new CarType(brand,model,year,engineD));
+                        } catch (UnirestException | JSONException | IOException e) {
                             e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (IOException exception) {
-                            exception.printStackTrace();
                         }
                     }
                 });
                 serverThread.start();
+                serverThread.interrupt();
 
             }
 
@@ -154,12 +151,9 @@ public class MainScreenFragment extends Fragment {
 
             }
         });
-        return view;
     }
 
     private ArrayList<String> getAllCarsFromServer() {
-
-
         ArrayList<String> arrayListSpinner = new ArrayList<String>();
         serverThread = new Thread(new Runnable() {
             @Override
@@ -172,12 +166,8 @@ public class MainScreenFragment extends Fragment {
                     ) {
                         repo.insertCarDbOnly(car);
                     }
-                } catch (IOException exception) {
+                } catch (IOException | UnirestException | JSONException exception) {
                     exception.printStackTrace();
-                } catch (UnirestException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
         });
@@ -186,6 +176,7 @@ public class MainScreenFragment extends Fragment {
         for (int i = 0; i < carArrayList.size(); i++) {
             arrayListSpinner.add(carArrayList.get(i).loadFullModelForShow());
         }
+        serverThread.interrupt();
         return arrayListSpinner;
     }
 

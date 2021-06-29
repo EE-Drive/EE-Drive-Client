@@ -10,19 +10,18 @@ import org.json.JSONObject;
 
 @Entity(tableName = "CarType")
 public class CarType {
+
+    //Variables
     @NonNull
     @PrimaryKey
-    String _id;
-    String brand;
-    String model;
-    String year = "3000";
-    String engineDisplacement;
-
+    private String _id;
+    private  String brand, model, year = "3000", engineDisplacement;
 
     @Ignore
-    public CarType(String id){
-        this._id=id;
+    public CarType(String id) {
+        this._id = id;
     }
+
     public String getEngineDisplacement() {
         return engineDisplacement;
     }
@@ -39,28 +38,28 @@ public class CarType {
         this._id = _id;
     }
 
-
     @Ignore
-    public CarType(String brand, String model, String year,String  engineDisplacement) {
-        this._id=null;
+    public CarType(String brand, String model, String year, String engineDisplacement) {
+        this._id = null;
         this.brand = brand;
         this.model = model;
         this.year = year;
-        this.engineDisplacement=engineDisplacement;
+        this.engineDisplacement = engineDisplacement;
     }
-    public CarType( String _id, String brand, String model, String year,String  engineDisplacement) {
-        this._id=_id;
+
+    public CarType(String _id, String brand, String model, String year, String engineDisplacement) {
+        this._id = _id;
         this.brand = brand;
         this.model = model;
         this.year = year;
-        this.engineDisplacement=engineDisplacement;
+        this.engineDisplacement = engineDisplacement;
     }
 
     public CarType(CarType ct) {
         this.brand = ct.brand;
         this.model = ct.model;
         this.year = ct.year;
-        this.engineDisplacement=ct.engineDisplacement;
+        this.engineDisplacement = ct.engineDisplacement;
     }
 
     public String getBrand() {
@@ -93,7 +92,7 @@ public class CarType {
                 "brand:'" + brand + '\'' +
                 ", model:'" + model + '\'' +
                 ", year:" + year + '\'' +
-                ", engineDisplacement:" + engineDisplacement+
+                ", engineDisplacement:" + engineDisplacement +
                 '}';
     }
 
@@ -104,7 +103,7 @@ public class CarType {
             json.put("companyName", brand);
             json.put("brandName", model);
             json.put("year", year);
-            json.put("engineDisplacement",engineDisplacement);
+            json.put("engineDisplacement", engineDisplacement);
 
 
         } catch (
@@ -115,7 +114,7 @@ public class CarType {
     }
 
     public String loadFullModelForShow() {
-        return brand+" "+model+" "+year+" "+engineDisplacement;
+        return brand + " " + model + " " + year + " " + engineDisplacement;
     }
 
 }

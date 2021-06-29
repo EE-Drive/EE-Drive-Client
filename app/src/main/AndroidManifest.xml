@@ -26,7 +26,10 @@
 
         android:theme="@style/Theme.EEDriveClient">
         <activity
-            android:name=".Activities.MainActivity">
+            android:name=".Activities.MainActivity"
+            android:screenOrientation="portrait"
+
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

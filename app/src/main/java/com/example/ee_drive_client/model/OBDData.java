@@ -2,16 +2,11 @@ package com.example.ee_drive_client.model;
 
 public class OBDData {
 
+    //Variables
     public final static OBDData instance = new OBDData();
-    private double latitude = 0;
-    private double longitude = 0;
+    private double latitude = 0, longitude = 0, fuel = 0, mMaf = 0, rpm = 0, mMap = 0, mIat = 0;
     private int speed = 0;
-    private double fuel = 0;
-    private double mMaf = 0;
-    private double rpm = 0;
-    private double mMap = 0;
-    private double mIat = 0;
-    private String mType="RPM";
+    private String mType = "RPM";
 
     public String getmType() {
         return mType;

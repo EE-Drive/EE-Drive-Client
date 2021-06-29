@@ -30,9 +30,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:layout_marginLeft="80dp"
-        android:layout_marginTop="76dp"
-        android:maxEms="10"
+        android:layout_marginTop="100dp"
 
+        android:maxEms="10"
         android:text="Speed"
         android:textColor="#5669D5"
         android:textSize="18sp"
@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="76dp"
+        android:layout_marginTop="100dp"
         android:layout_marginEnd="10dp"
         android:autoText="false"
         android:breakStrategy="simple"
@@ -54,9 +54,9 @@
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="#5669D5"
-        app:layout_constraintHorizontal_bias="0.542"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.542"
         app:layout_constraintStart_toEndOf="@+id/recording_speed_txt"
         app:layout_constraintTop_toBottomOf="@+id/recording_title_txt" />
 
@@ -93,7 +93,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="149dp"
+        android:layout_marginTop="130dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="245dp"
         android:text="Please choose Obd"
@@ -101,25 +101,25 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.018"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recording_fuelCons_txt" />
+        app:layout_constraintTop_toBottomOf="@+id/recording_fuelCons_txt"
+        app:layout_constraintVertical_bias="0.018" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/recording_stop_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="16dp"
         android:clickable="true"
         android:src="@android:drawable/ic_media_pause"
         app:backgroundTint="#E60505"
         app:fabSize="auto"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recording_record_txt"
+        app:layout_constraintTop_toBottomOf="@+id/recording_end_text"
         app:maxImageSize="36dp" />
 
     <ImageButton
@@ -128,13 +128,13 @@
         android:layout_height="57dp"
         android:layout_marginStart="166dp"
         android:layout_marginLeft="166dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="166dp"
         android:layout_marginRight="166dp"
         android:layout_marginBottom="40dp"
         android:background="#7EC52C"
         android:scaleType="fitCenter"
-        android:src="@android:drawable/stat_sys_data_bluetooth"
+        android:src="@drawable/bluetooth_foreground"
         app:layout_constraintBottom_toTopOf="@+id/recording_connected_txt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -153,5 +153,41 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recording_obd_btn" />
+
+    <TextView
+        android:id="@+id/recording_end_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="177dp"
+        android:layout_marginLeft="177dp"
+        android:layout_marginTop="23dp"
+        android:layout_marginEnd="177dp"
+        android:layout_marginRight="177dp"
+        android:layout_marginBottom="30dp"
+        android:text="Click To End Drive"
+        android:textColor="#FF0000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/recording_stop_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recording_record_txt" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/recording_assist_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="67dp"
+        android:layout_marginLeft="67dp"
+        android:layout_marginTop="316dp"
+        android:layout_marginEnd="37dp"
+        android:layout_marginRight="37dp"
+        android:layout_marginBottom="59dp"
+        android:clickable="true"
+        android:src="@android:drawable/presence_audio_away"
+        app:backgroundTint="#2196F3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/recording_connected_txt"
+        app:layout_constraintTop_toBottomOf="@+id/recording_fuelCons_dynmTxt" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

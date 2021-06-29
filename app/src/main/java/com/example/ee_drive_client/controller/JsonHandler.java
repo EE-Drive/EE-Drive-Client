@@ -19,27 +19,25 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class JsonHandler {
+
+    //Variables
     public JSONObject driveDataJson;
 
     public JsonHandler(JSONObject json) {
         this.driveDataJson = json;
     }
 
-
     public void appendPoints(JSONObject json) throws JSONException {
-        ArrayList <Point> points= new ArrayList<Point> ((Collection<? extends Point>) this.driveDataJson.get("points"));
-        ArrayList <Point> points2= new ArrayList<Point> ((Collection<? extends Point>) json.get("points"));
+        ArrayList<Point> points = new ArrayList<Point>((Collection<? extends Point>) this.driveDataJson.get("points"));
+        ArrayList<Point> points2 = new ArrayList<Point>((Collection<? extends Point>) json.get("points"));
         points.addAll(points2);
         this.driveDataJson.put("points", points);
-
     }
 
     public boolean saveToFile(String fileName, JSONObject json) {
         //Requesting Permission to access External Storage
         //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
         //     101);
-
-
         File f = new File(Environment.getExternalStorageDirectory(), "EE-Drive");
         System.out.println(f);
         if (!f.exists()) {
@@ -54,10 +52,8 @@ public class JsonHandler {
         if (!f1.exists()) {
             f1.mkdirs();
         }
-
-
         File folder4 = new File(Environment.getExternalStorageDirectory(), "EE-Drive/Drives");
-        File file = new File(folder4, fileName+ ".json");
+        File file = new File(folder4, fileName + ".json");
         try {
             FileOutputStream fos;
             //fos =  cnc.openFileOutput(FILENAME,  Context.MODE_PRIVATE);
@@ -69,35 +65,27 @@ public class JsonHandler {
         } catch (IOException e) {
             System.out.println(e);
         }
-
-        File newFile = new File(Environment.getExternalStorageDirectory() + "/" + "EE-Drive" + "/"+ "Drives", fileName+ ".json");
-
+        File newFile = new File(Environment.getExternalStorageDirectory() + "/" + "EE-Drive" + "/" + "Drives", fileName + ".json");
         return newFile.exists();
-
-
     }
 
-
     public static JSONObject readFromFile(String fileName) throws JSONException {
-        File f1 = new File(Environment.getExternalStorageDirectory() + "/" + "EE-Drive" + "/" + "Drives", fileName + ".json" );
+        File f1 = new File(Environment.getExternalStorageDirectory() + "/" + "EE-Drive" + "/" + "Drives", fileName + ".json");
         StringBuilder text = new StringBuilder();
         BufferedReader br = null;
-
         try {
             br = new BufferedReader(new FileReader(f1));
             String line;
-
             while ((line = br.readLine()) != null) {
                 text.append(line);
-
             }
         } catch (IOException e) {
-            // do exception handling
         } finally {
-            try { br.close(); } catch (Exception e) { }
+            try {
+                br.close();
+            } catch (Exception e) {
+            }
         }
-
         return new JSONObject(text.toString());
-
     }
 }

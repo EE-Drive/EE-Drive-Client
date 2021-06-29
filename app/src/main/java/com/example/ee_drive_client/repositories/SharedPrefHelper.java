@@ -5,12 +5,9 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 public class SharedPrefHelper {
-    private static final String ID_KEY = "ID_KEY";
-    private static final String ENGINE_KEY = "ENGINE_KEY";
-    private static final String BRAND_KEY = "BRAND_KEY";
-    private static final String MODEL_KEY = "MODEL_KEY_KEY";
-    private static final String YEAR_KEY = "YEAR_KEY";
 
+    //Variables
+    private static final String ID_KEY = "ID_KEY",ENGINE_KEY = "ENGINE_KEY",BRAND_KEY = "BRAND_KEY",MODEL_KEY = "MODEL_KEY_KEY",YEAR_KEY = "YEAR_KEY";
     private static SharedPrefHelper instance;
     private final SharedPreferences preferences;
 
@@ -59,7 +56,6 @@ public class SharedPrefHelper {
     public String getId() {
         return preferences.getString(ID_KEY, null);
     }
-
     public int getEngine() {
         return preferences.getInt(ENGINE_KEY, 0);
     }
@@ -69,7 +65,6 @@ public class SharedPrefHelper {
     public String getModel() {
         return preferences.getString(MODEL_KEY, null);
     }
-
     public String getYear() {
         return preferences.getString(YEAR_KEY, null);
     }
