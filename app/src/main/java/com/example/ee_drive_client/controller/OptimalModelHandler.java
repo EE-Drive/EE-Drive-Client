@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 public class OptimalModelHandler {
@@ -111,43 +112,48 @@ public class OptimalModelHandler {
     }
 
     public boolean getStartingPointAndCreateModel() throws IOException, JSONException {
-        sharedPrefHelper = SharedPrefHelper.getInstance(GlobalContextApplication.getContext());
-        driveData = DriveData.getInstance();
-        driveAssistant = DriveAssistant.getInstance();
-        String carId = sharedPrefHelper.getId();
-        JSONObject optimalModel = new JSONObject();
-        Log.d("Drive Data", driveData.getPoints().toString());
-        x = driveAssistant.getCurrentX();
-        y = driveAssistant.getCurrentY();
-        Log.d("drive x ", Double.toString(x));
-        routeId = getRouteId(x, y);
-        if (routeId == null) {
-            driveAssistant.setVertexFound(false);
-            return false;
-        } else {
-            driveAssistant.setVertexFound(true);
+        try{
+            sharedPrefHelper = SharedPrefHelper.getInstance(GlobalContextApplication.getContext());
+            driveData = DriveData.getInstance();
+            driveAssistant = DriveAssistant.getInstance();
+            String carId = sharedPrefHelper.getId();
+            JSONObject optimalModel = new JSONObject();
+            Log.d("Drive Data", driveData.getPoints().toString());
+            x = driveAssistant.getCurrentX();
+            y = driveAssistant.getCurrentY();
+            Log.d("drive x ", Double.toString(x));
+            routeId = getRouteId(x, y);
+            if (routeId == null) {
+                driveAssistant.setVertexFound(false);
+                return false;
+            } else {
+                driveAssistant.setVertexFound(true);
+            }
+            vertices = "{\"vertices\":" + getOptimalModelVerticesById(routeId, carId) + "}";
+            if (vertices != null) {
+                verticesJson = new JSONObject(vertices);
+            }
+            edges = "{\"edges\":" + getOptimalModelEdgesById(routeId, carId) + "}";
+            if (edges != null) {
+                edgesJson = new JSONObject(edges);
+            }
+            modelId = "{\"_id\":" + getOptimalModelId(routeId, carId) + "}";
+            optimalModel.put("vertices", new JSONObject(vertices).getJSONArray("vertices"));
+            optimalModel.put("edges", new JSONObject(edges).getJSONArray("edges"));
+            optimalModel.put("_id", modelId);
+            optimalModel.put("carTypeID", carId);
+            optimalModel.put("routeID", routeId);
+            OptimalModel newOptimalModel = new OptimalModel(optimalModel);
+            startIndex = getStartVertix(x, y, newOptimalModel);
+            driveAssistant.setCurrentVertex(newOptimalModel.getVertices().get(startIndex));
+            driveAssistant.setCurrentOptimalModel(newOptimalModel);
+            Log.d("current vertex", Integer.toString(driveAssistant.getCurrentVertex().getIndex()));
+            driveData.getDriveAssist().postValue(true);
+            return true;
+            //TODO move SELF to onConnect
+        }catch (ConcurrentModificationException exception){
+            Log.d("exception" , exception.toString());
         }
-        vertices = "{\"vertices\":" + getOptimalModelVerticesById(routeId, carId) + "}";
-        if (vertices != null) {
-            verticesJson = new JSONObject(vertices);
-        }
-        edges = "{\"edges\":" + getOptimalModelEdgesById(routeId, carId) + "}";
-        if (edges != null) {
-            edgesJson = new JSONObject(edges);
-        }
-        modelId = "{\"_id\":" + getOptimalModelId(routeId, carId) + "}";
-        optimalModel.put("vertices", new JSONObject(vertices).getJSONArray("vertices"));
-        optimalModel.put("edges", new JSONObject(edges).getJSONArray("edges"));
-        optimalModel.put("_id", modelId);
-        optimalModel.put("carTypeID", carId);
-        optimalModel.put("routeID", routeId);
-        OptimalModel newOptimalModel = new OptimalModel(optimalModel);
-        startIndex = getStartVertix(x, y, newOptimalModel);
-        driveAssistant.setCurrentVertex(newOptimalModel.getVertices().get(startIndex));
-        driveAssistant.setCurrentOptimalModel(newOptimalModel);
-        Log.d("current vertex", Integer.toString(driveAssistant.getCurrentVertex().getIndex()));
-        driveData.getDriveAssist().postValue(true);
-        //TODO move SELF to onConnect
         return true;
     }
 }
