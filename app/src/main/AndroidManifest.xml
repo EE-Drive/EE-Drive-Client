@@ -1,45 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.ee_drive_client">
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    package="com.example.ee_drivefinal">
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.GET_TASKS"/>
-
-    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED"
-        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".Utils.GlobalContextApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:name="com.example.ee_drive_client.repositories.GlobalContextApplication"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:requestLegacyExternalStorage="true"
-
-        android:theme="@style/Theme.EEDriveClient">
-        <activity
-            android:name=".Activities.MainActivity"
-            android:screenOrientation="portrait"
-
-            >
+        android:theme="@style/Theme.EEDriveFinal">
+        <activity android:name=".View.ConfirmationActivity"></activity>
+        <activity android:name=".View.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".View.DrivingActivity"
+            android:screenOrientation="portrait"
+
+            />
+        <activity
+            android:name=".View.DriveHistoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.AddCarActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.ChangeCarActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".View.MainActivity"
+            android:screenOrientation="portrait"></activity>
         <service
             android:foregroundServiceType="location"
-            android:name=".service.DriveService"></service>
+            android:name=".Service.DriveService"></service>
     </application>
-
 
 </manifest>
