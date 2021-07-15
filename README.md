@@ -34,6 +34,7 @@
                 <ul>
         <li><a href="#choosing-a-car">Choosing a car</a></li>
          <li><a href="#drive ">Drive</a></li>
+          <li><a href="#model ">Model</a></li>
         <li><a href="#car-details">Car Details</a></li>
       </ul  
     </li>
@@ -98,10 +99,19 @@ Choose youre OBD device by clicking the bluetooth button, the drive will be star
   at the end of the drive, press the stop button in order to confirm your drive to the server.<br>
   Note: if all permissions has been given like requested, the drive file will be created in your storage folder under the path "EE-Drive/Drives". <br>
    <img src="images/screenshot_drive.png" alt="register">
+   
+    ### Model
+    If you are in a model and you check the "Use Model" checkbox , <br>
+    You can see on the navbar the current recommended speed.<br>
+    Click "Show" to watch it in a larger popUp.
+    <img src="images/screenshot_model.png" alt="register">
+
+
+   
 
   
-  ### Car Details
-  You can check your car properties, and watch your drive history by clicking the "Car details" button.<br>
+  ### Car History
+  You can  watch your drive history by clicking the "Drive History" button.<br>
    <img src="images/screenshot_details.png" alt="register">
 
   
