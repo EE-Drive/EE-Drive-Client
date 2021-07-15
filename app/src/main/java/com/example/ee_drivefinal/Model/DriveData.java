@@ -2,6 +2,8 @@ package com.example.ee_drivefinal.Model;
 
 import android.util.Log;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.ee_drivefinal.Repositories.JsonHandler;
 import com.example.ee_drivefinal.Utils.SharedPrefHelper;
 import com.example.ee_drivefinal.ViewModel.DrivingViewModel;
@@ -35,6 +37,7 @@ public class DriveData {
     private JSONArray speed;
     private ArrayList<String[]> mObdData;
     public ArrayList<Point> points = new ArrayList<Point>();
+    private MutableLiveData<Integer> currentRecommendedSpeed ;
 
     public DriveData(String id, boolean driverAssist, CarType carType) {
         this.id = id;
@@ -44,9 +47,14 @@ public class DriveData {
         formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
         date = new Date(System.currentTimeMillis());
         this.timeAndDate = formatter.format(date);
+        this.currentRecommendedSpeed = new MutableLiveData<>();
     }
     public void resetData() {
         instance = new DriveData("", false, new CarType(SharedPrefHelper.getInstance().getBrand(), SharedPrefHelper.getInstance().getModel(), SharedPrefHelper.getInstance().getYear(), Integer.toString(SharedPrefHelper.getInstance().getEngine())));
+    }
+
+    public MutableLiveData<Integer> getCurrentRecommendedSpeed() {
+        return currentRecommendedSpeed;
     }
 
     private int getPointsSize(){

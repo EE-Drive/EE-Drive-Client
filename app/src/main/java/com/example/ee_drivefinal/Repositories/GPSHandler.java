@@ -62,17 +62,11 @@ public class GPSHandler {
 
     public void onLocationChanged(Location lastLocation) {
         // New location has now been determined
-        String msg = "Updated Location: " +
-                Double.toString(lastLocation.getLatitude()) + "," +
-                Double.toString(lastLocation.getLongitude());
-         Log.d("Location" , msg);
         GPS gpsLocation = new GPS();
         gpsLocation.setLongitude(lastLocation.getLongitude());
         gpsLocation.setLatitude(lastLocation.getLatitude());
         Point pointCurrent = new Point(gpsLocation.getLatitude(), gpsLocation.getLongitude());
         driveData.addPoint(pointCurrent);
-       // DriveAssistant.getInstance().setCurrentX(lastLocation.getLatitude());
-       // DriveAssistant.getInstance().setCurrentY(lastLocation.getLongitude());
         gpsData.postValue(gpsLocation);
 
     }

@@ -29,14 +29,15 @@ public class ServerHandler {
     private String id;
     private int attempt;
     boolean sent;
-    private Thread serverThread;
+    private Thread serverThread, AssistThread;
     private MutableLiveData<String> sendToServerStatus;
+    private JSONObject jsonObject = new JSONObject();
+
 
     public ServerHandler() throws IOException {
         this.url = new URL("https://eedrive.cs.colman.ac.il");
         sendToServerStatus = new MutableLiveData<>();
     }
-
 
 
     public MutableLiveData<String> getSendToServerStatus() {
@@ -56,8 +57,8 @@ public class ServerHandler {
         while (attempt < 5 && requestId != 200) {
             response = Unirest.get("http://eedrive.cs.colman.ac.il/api/car-type").asString();
             requestId = response.getCode();
-            Log.d("requestId",Integer.toString(requestId));
-            Log.d("response",(response.getBody()));
+            Log.d("requestId", Integer.toString(requestId));
+            Log.d("response", (response.getBody()));
 
             attempt++;
         }
@@ -103,15 +104,15 @@ public class ServerHandler {
             JSONObject carInfo = getAcarFromServer(str);
             String CarEngine = carInfo.getString("engineDisplacement");
             SharedPrefHelper.getInstance().storeModel(carInfo.getString("brandName"));
-            Log.d("Model",carInfo.getString("brandName"));
-            Log.d("Brand",carInfo.getString("companyName"));
+            Log.d("Model", carInfo.getString("brandName"));
+            Log.d("Brand", carInfo.getString("companyName"));
             SharedPrefHelper.getInstance().storeBrand(carInfo.getString("companyName"));
             SharedPrefHelper.getInstance().storeEngine(CarEngine);
             SharedPrefHelper.getInstance().storeId(str);
             return str;
         }
         //if we get code 400 there is a problem
-        Log.d("Error","Fail to send to Server");
+        Log.d("Error", "Fail to send to Server");
         return "fail to send car-type to server";
     }
 
@@ -166,10 +167,10 @@ public class ServerHandler {
                 Log.d("SendId", driveData.getId());
                 try {
                     sendEndOfDriveFromFile(driveData.getTimeAndDate(), driveData.getId());
-                } catch (JSONException  e) {
+                } catch (JSONException e) {
                     e.printStackTrace();
                     FileHandler.appendLog(e.toString());
-                }catch (UnirestException exception){
+                } catch (UnirestException exception) {
                     sendToServerStatus.postValue("Failed");
                 }
             }
@@ -187,6 +188,7 @@ public class ServerHandler {
         //     JSONObject driveTest=new JSONObject("{\"driveRawData\":[{\"fuelCons\":[],\"speeds\":[],\"lat\":\"32.0230815\",\"long\":\"34.7809234\"},{\"fuelCons\":[0.6380152825224644,0.5767793295416552,0.5767793295416552,0.5733420272201913,0.5733420272201913,0.5733420272201913,0.5733420272201913,0.580904092327412,0.580904092327412,0.580904092327412],\"speeds\":[0,0,0,0,0,0,0,0,0,0,0,0],\"lat\":\"32.0231131\",\"long\":\"34.7809351\"},{\"fuelCons\":[0.580904092327412,0.5699047248987275,0.5509079007354365,0.5509079007354365,0.5509079007354365,0.56486334816058,0.56486334816058,0.56486334816058,0.56486334816058,0.5542306263128517,0.5733420272201913,0.5733420272201913,0.5733420272201913,0.5644050411843852,0.5644050411843852,0.5644050411843852],\"speeds\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\"lat\":\"32.0231216\",\"long\":\"34.780945\"},{\"fuelCons\":[0.5644050411843852,0.5850288551131688,0.5850288551131688,0.583099022175306,0.583099022175306,0.5817286366942829,0.5623376821378067,0.5623376821378067,0.5623376821378067,0.5504153284529063,0.5693951673650753,0.571279645827313,0.571279645827313,0.57059218536302,0.57059218536302,0.568709974624564,0.568709974624564,0.5824138294347943,0.5824138294347943,0.5824138294347943,0.5824138294347943],\"speeds\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\"lat\":\"32.023134\",\"long\":\"34.7809531\"},{\"fuelCons\":[0.6111919245362782,1.3649952981310214,1.3649952981310214,1.3649952981310214,3.3436263749061457,2.5451484346300512,2.5451484346300512,2.5451484346300512,2.4240063581076146,1.3308270201375136,1.3308270201375136,1.3308270201375136,0.9157829374516673,0.8830764039712504,0.8830764039712504],\"speeds\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\"lat\":\"32.0231468\",\"long\":\"34.7809539\"},{\"fuelCons\":[0.8830764039712504,0.6980743640331395,0.6722197579578378,0.6722197579578378,0.6722197579578378,0.5962090432770929,0.5962090432770929,0.5962090432770929,0.5962090432770929,0.564735856729597],\"speeds\":[0,0,0,0,0,0,0,0,0,0],\"lat\":\"32.0231534\",\"long\":\"34.7809535\"}]}}");
         sendToServerStatus.postValue("Working");
         String driveData = drive.getString("driveRawData");
+      //  String driverAssist = drive.getString("driverAssist");
         if (DriveId == null || DriveId == "") {
             Log.d("driveToServerId", "is null");
         }
@@ -195,20 +197,44 @@ public class ServerHandler {
         HttpResponse<String> response = Unirest
                 .post("http://eedrive.cs.colman.ac.il/api/drive/" + DriveId)
                 .header("Content-Type", "application/json")
-                .body("{\"driveRawData\":" + driveData + "}")
+                .body("{" +
+                        //"\"driverAssist\":"+ drive.getString("driverAssist")+","+
+                        "\"driveRawData\":" + driveData
+
+                        +"}")
                 .asString();
-        int code= response.getCode();
+        int code = response.getCode();
         Log.d("Response code", Integer.toString(code));
-        if (code == 200 || code == 201){
-            Log.d("RESPONSE Code",Integer.toString(code));
+        if (code == 200 || code == 201) {
+            Log.d("RESPONSE Code", Integer.toString(code));
             DriveData.getInstance().setSentToServer(true);
             sendToServerStatus.postValue("Connected");
-        }else{
-            Log.d("RESPONSE Code",Integer.toString(code));
+        } else {
+            Log.d("RESPONSE Code", Integer.toString(code));
 
             sendToServerStatus.postValue("Failed");
         }
         //if we get code 400 there is a problem
         return response.getBody();
     }
+
+    public JSONObject getOptimalModel(String carTypeId , double lat,double _long) throws UnirestException, JSONException {
+        Unirest.setTimeouts(0, 0);
+        String body="{"
+                +   "\"lat\": "+ lat +","
+                +   "\"long\": "+ _long +","
+                + "\"carTypeID\": " + "\"" + carTypeId + "\""
+                +   "}";
+        HttpResponse<String> response = Unirest
+                .post("http://eedrive.cs.colman.ac.il/api/model-route/bring-Model")
+                .header("Content-Type", "application/json")
+                .body(body)
+                .asString();
+        int code= response.getCode();
+
+
+        return  new JSONObject(response.getBody());
+    }
+
+
 }

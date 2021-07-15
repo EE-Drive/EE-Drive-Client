@@ -33,6 +33,7 @@ import com.example.ee_drivefinal.Repositories.ServerHandler;
 import com.example.ee_drivefinal.Service.DriveService;
 import com.example.ee_drivefinal.Utils.FileHandler;
 import com.example.ee_drivefinal.Utils.GlobalContextApplication;
+import com.example.ee_drivefinal.Utils.SharedPrefHelper;
 import com.example.ee_drivefinal.View.ConfirmationActivity;
 import com.example.ee_drivefinal.View.DriveHistoryActivity;
 import com.example.ee_drivefinal.View.DrivingActivity;
@@ -53,6 +54,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,6 +83,7 @@ public class DrivingViewModel {
     private ServerHandler serverHandler;
     private MutableLiveData<String> status;
     private Intent driveServiceIntent;
+    final Handler handler = new Handler();
 
     //Make sure to init drivedatya from driving activity;
     public DrivingViewModel(DrivingActivity view) throws IOException {
@@ -89,14 +92,15 @@ public class DrivingViewModel {
 
     }
 
-
     public void startListeners() {
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(@NonNull Location location) {
-                Log.d("location", String.valueOf(location.getLongitude()));
-            }
-        };
+        driveServiceIntent = new Intent(GlobalContextApplication.getContext(), DriveService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            drivingActivity.startForegroundService(driveServiceIntent);
+        } else {
+            drivingActivity.startService(driveServiceIntent);
+        }
+        DriveData.getInstance().setDriveInProcess(true);
+        startAssistListener();
     }
 
     private void initialVariables(DrivingActivity view) throws IOException {
@@ -111,9 +115,7 @@ public class DrivingViewModel {
     }
 
     public DrivingViewModel() {
-
     }
-
 
     public void finish() {
         if (driveServiceIntent != null)
@@ -122,20 +124,15 @@ public class DrivingViewModel {
         if (bluetoothSocket != null)
             if (bluetoothSocket.isConnected())
                 obdHandler.stopRecording();
+        if(handler!=null)
+            handler.removeCallbacksAndMessages(null);
+        driveData.setDriveInProcess(false);
+        driveData.resetData();
     }
 
-
     public void chooseDevice() {
-        driveServiceIntent = new Intent(GlobalContextApplication.getContext(), DriveService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            drivingActivity.startForegroundService(driveServiceIntent);
-        } else {
-            drivingActivity.startService(driveServiceIntent);
-        }
-        // gpsHandler.startLocationUpdates();
         ArrayList deviceStrs = new ArrayList();
         final ArrayList devices = new ArrayList();
-
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
         if (pairedDevices.size() > 0) {
@@ -147,14 +144,11 @@ public class DrivingViewModel {
 
         // show list
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(drivingActivity);
-
         ArrayAdapter adapter = new ArrayAdapter(GlobalContextApplication.getContext(), android.R.layout.select_dialog_singlechoice,
                 deviceStrs.toArray(new String[deviceStrs.size()]));
-
         alertDialog.setSingleChoiceItems(adapter, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 dialog.dismiss();
                 int position = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
                 String deviceAddress = devices.get(position).toString();
@@ -170,7 +164,6 @@ public class DrivingViewModel {
                         FileHandler.appendLog(e.toString());
                         e.printStackTrace();
                     }
-
                     handler.post(() -> {
                         //UI Thread work here
                         drivingActivity.showProgressBar(false);
@@ -183,24 +176,14 @@ public class DrivingViewModel {
                         }
                     });
                 });
-
                 // TODO save deviceAddress
             }
         });
-
         alertDialog.setTitle("Choose Bluetooth device");
         alertDialog.show();
-
     }
 
     private void connect(String deviceAddress) throws IOException {
-//        bluetoothManager.bluetoothErrorMessage.observe(drivingActivity, new Observer<String>() {
-//            @Override
-//            public void onChanged(String s) {
-//                drivingActivity.updateStatus(s);
-//                drivingActivity.hideSpinner();
-//            }
-//        });
         BluetoothDevice device = btAdapter.getRemoteDevice(deviceAddress);
         bluetoothSocket = bluetoothManager.connect(device);
         if (bluetoothSocket.isConnected()) {
@@ -210,19 +193,7 @@ public class DrivingViewModel {
         }
     }
 
-//    public void listenToServerHandler() throws IOException {
-//        ServerHandler.getInstance().getSendToServerStatus().observe(drivingActivity, new Observer<String>() {
-//            @Override
-//            public void onChanged(String s) {
-//                if(s=="Working"){
-//                    drivingActivity.showProgressBarEnd(true);
-//
-//                }else{
-//                    drivingActivity.showConfirmationActivity(ConfirmationActivity.class);
-//                }
-//            }
-//        });
-//    }
+
 
     public void endDrive() throws IOException {
         serverHandler.getSendToServerStatus().observe(drivingActivity, new Observer<String>() {
@@ -241,6 +212,9 @@ public class DrivingViewModel {
         sendDriveToServer();
         disconnect();
         stopService();
+        stopWritingData();
+
+        driveData.setDriveInProcess(false);
         //TODO: save to file and return to main activity / summarize drive
         if (bluetoothSocket.isConnected()) {
             gpsHandler.stopLocationChanged();
@@ -253,6 +227,13 @@ public class DrivingViewModel {
             if (!bluetoothSocket.isConnected()) {
             }
         } else {
+        }
+
+    }
+
+    private void stopWritingData() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
         }
 
     }
@@ -281,6 +262,7 @@ public class DrivingViewModel {
     }
 
     public void startDriveRecord() throws JSONException, UnirestException {
+        driveData.setDriveInProcess(true);
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -321,6 +303,16 @@ public class DrivingViewModel {
                     }
                 });
 
+
+            }
+        });
+    }
+
+    private void startAssistListener() {
+        DriveData.getInstance().getCurrentRecommendedSpeed().observe(drivingActivity, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer recommendedSpeed) {
+                drivingActivity.updateAssistUpdate(recommendedSpeed);
             }
         });
     }
@@ -330,7 +322,6 @@ public class DrivingViewModel {
     }
 
     private void writeDataHandler() {
-        final Handler handler = new Handler();
         final int delay = 3000; // 1000 milliseconds == 1 second
         handler.postDelayed(new Runnable() {
             public void run() {
@@ -340,10 +331,24 @@ public class DrivingViewModel {
                     FileHandler.appendLog(exception.toString());
                     exception.printStackTrace();
                 }
+                if(!DriveData.getInstance().getDriveInProcess()){
+                    handler.removeCallbacks(this);
+                }
                 handler.postDelayed(this, delay);
             }
         }, delay);
 
+    }
+
+    public void setDriveAssist(boolean b) throws JSONException, UnirestException {
+        if(b){
+       //     if(driveData.getPoints()!=null && driveData.getPoints().size()>1)
+  //          Log.d("Model", serverHandler.getOptimalModel(SharedPrefHelper.getInstance().getId(),DriveData.getInstance().getLastPoint().getLat(),DriveData.getInstance().getLastPoint().getLang()).toString());
+            driveData.setDriverAssist(true);
+        }else{
+
+            driveData.setDriverAssist(false);
+        }
     }
 }
 

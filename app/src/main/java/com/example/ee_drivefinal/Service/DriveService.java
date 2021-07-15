@@ -6,21 +6,31 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.example.ee_drivefinal.Model.DriveData;
 import com.example.ee_drivefinal.Model.GPS;
+import com.example.ee_drivefinal.Model.OptimalModel;
 import com.example.ee_drivefinal.Model.Point;
 import com.example.ee_drivefinal.R;
 import com.example.ee_drivefinal.Repositories.GPSHandler;
+import com.example.ee_drivefinal.Repositories.ServerHandler;
+import com.example.ee_drivefinal.Utils.FileHandler;
 import com.example.ee_drivefinal.Utils.GlobalContextApplication;
+import com.example.ee_drivefinal.Utils.SharedPrefHelper;
 import com.example.ee_drivefinal.View.DrivingActivity;
 import com.google.android.gms.location.LocationServices;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 
@@ -29,12 +39,18 @@ public class DriveService extends Service {
     //Variables
     private GPSHandler gpsHandler;
     private DriveData driveData;
+    private OptimalModel optimalModel;
     private Notification notification;
+    private ServerHandler serverHandler;
+    private Thread serverThread;
+    private Thread modelThread;
+    final Handler handler = new Handler();
 
 
     public DriveService() throws IOException {
         driveData = DriveData.getInstance();
         gpsHandler = new GPSHandler(LocationServices.getSettingsClient(GlobalContextApplication.getContext()));
+        serverHandler = new ServerHandler();
     }
 
     @Override
@@ -56,11 +72,22 @@ public class DriveService extends Service {
                 String msg = "obsereved Location: " +
                         Double.toString(gps.getLatitude()) + "," +
                         Double.toString(gps.getLongitude());
-                // Toast.makeText(GlobalContextApplication.getContext(), msg, Toast.LENGTH_SHORT).show();
                 Point pointCurrent = new Point(gps.getLatitude(), gps.getLongitude());
-                //   DriveAssistant.getInstance().setCurrentX(gps.getLatitude());
-                // DriveAssistant.getInstance().setCurrentY(gps.getLongitude());
-                if (driveData.getDriveInProcess() == true) {
+                if (optimalModel != null && driveData.getDriverAssist()) {
+                    Log.d("model2", "true");
+                    if (optimalModel.isInModel()) {
+                        optimalModel.setCurrentVertexIndex(gps.getLatitude(), gps.getLongitude());
+                        Log.d("Vertex", Integer.toString(optimalModel.getCurrentVertex()));
+                        if (optimalModel.getCurrentVertex() != -1) {
+                            Log.d("Speed!", Integer.toString(optimalModel.getCurrentSpeed()));
+                            driveData.getCurrentRecommendedSpeed().postValue(optimalModel.getCurrentSpeed());
+                        } else {
+                            driveData.getCurrentRecommendedSpeed().postValue(-1);
+                        }
+                    }
+                }
+                if (DriveData.getInstance().getDriveInProcess()) {
+                    Log.d("Drive in process2", "true");
                     if (driveData.getPoints().size() == 0) {
                         driveData.addPoint(pointCurrent);
                     } else {
@@ -69,10 +96,44 @@ public class DriveService extends Service {
                         }
                     }
                 } else {
+                    //TODO: Change drive in process to beginning of the window
                     gpsHandler.gpsData.removeObserver(this);
                 }
             }
         });
+        serverThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
+        serverThread.start();
+
+        //TODO:FIX here
+        final int delay = 20000; // 1000 milliseconds == 1 second
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                Log.d("DriveAssist", Boolean.toString(DriveData.getInstance().getDriverAssist()));
+                if (DriveData.getInstance().getDriverAssist()) {
+                    modelThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                if (driveData.getPoints() != null && driveData.getPoints().size() > 1) {
+                                    optimalModel = new OptimalModel(serverHandler.getOptimalModel(SharedPrefHelper.getInstance().getId(), driveData.getLastPoint().getLat(), driveData.getLastPoint().getLang()));
+                                    Log.d("In Model", Boolean.toString(optimalModel.isInModel()));
+                                }
+                            } catch (UnirestException | JSONException exception) {
+                                FileHandler.appendLog(exception.toString());
+                                exception.printStackTrace();
+                            }
+                        }
+                    });
+                    modelThread.start();
+                }
+                handler.postDelayed(this, delay);
+            }
+        }, delay);
     }
 
     @Nullable
@@ -100,8 +161,10 @@ public class DriveService extends Service {
     @Override
     public void onDestroy() {
         stopForeground(true);
-
         gpsHandler.stopLocationChanged();
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
         stopSelf();
         super.onDestroy();
     }

@@ -6,10 +6,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,13 +46,16 @@ public class DrivingActivity extends AppCompatActivity implements CallBackFragme
 
     //Variables
     private Button obdBtn, stopBtn, startBtn, fullSModelScreenBtn, backBtn;
-    private TextView instructText, speedText, fuelText, obdText, statusText, mainText;
+    private TextView instructText, speedText, fuelText, obdText, statusText, mainText,speedPopUpText;
     private DrivingViewModel drivingViewModel;
     private ProgressBar progressBar;
     private ConstraintLayout assistBar;
     private CheckBox checkBox;
     private AppCompatActivity thisActivity;
     private AlertDialog backDialog;
+    private Dialog mDaialog;
+    private ImageView speedImage;
+
 
 
     @Override
@@ -111,21 +117,31 @@ public class DrivingActivity extends AppCompatActivity implements CallBackFragme
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    Log.d("Checked", "Use Model");
-                } else {
-                    Log.d("Checked", "Dont Use Model");
+                try {
+                    if (isChecked) {
+                        Log.d("Checked", "Use Model");
+                        drivingViewModel.setDriveAssist(true);
+                        DriveData.getInstance().setDriverAssist(true);
+                    } else {
+                        Log.d("Checked", "Dont Use Model");
+                        drivingViewModel.setDriveAssist(false);
+                        DriveData.getInstance().setDriverAssist(false);
+
+                    }
+                }catch (UnirestException | JSONException exception){
+                    exception.printStackTrace();
+                    FileHandler.appendLog(exception.toString());
                 }
                 drivingViewModel.updateAssist(isChecked);
             }
         });
-        statusText.setText("Not Connected,No Model");
+        statusText.setText("Not Connected");
         obdBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("Start Button", "Clicked");
                 drivingViewModel.chooseDevice();
-                updateStatus("Not Connected,No Model");
+                updateStatus("Not Connected");
 
             }
         });
@@ -185,8 +201,15 @@ public class DrivingActivity extends AppCompatActivity implements CallBackFragme
             @Override
             public void onClick(View v) {
                 Log.d("Full Screen Button", "Clicked");
+                mDaialog.setContentView(R.layout.popup);
+                mDaialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                speedPopUpText = mDaialog.findViewById(R.id.popup_speed_txt);
+                speedImage = mDaialog.findViewById(R.id.popup_image);
+                mDaialog.show();
             }
         });
+
+
     }
 
     public void showConfirmationActivity(Class<ConfirmationActivity> confirmationActivityClass) {
@@ -198,6 +221,7 @@ public class DrivingActivity extends AppCompatActivity implements CallBackFragme
         }
         startActivity(intent);
         //TODO: Put extra for drive brief summary
+        drivingViewModel.finish();
         finish();
     }
 
@@ -228,6 +252,9 @@ public class DrivingActivity extends AppCompatActivity implements CallBackFragme
         startBtn = findViewById(R.id.driving_start_btn);
         fullSModelScreenBtn = findViewById(R.id.driving_model_btn);
         backBtn = findViewById(R.id.driving_back_btn);
+        mDaialog = new Dialog(this);
+
+
     }
 
     @Override
@@ -310,4 +337,26 @@ public class DrivingActivity extends AppCompatActivity implements CallBackFragme
     }
 
 
+    public void updateAssistUpdate(Integer recommendedSpeed) {
+        if(recommendedSpeed!=-1){
+            instructText.setText("Recommended Speed : " + recommendedSpeed);
+            fullSModelScreenBtn.setVisibility(View.VISIBLE);
+            if(speedPopUpText!=null && speedImage !=null){
+                speedPopUpText.setText(Integer.toString(recommendedSpeed));
+                if(DriveData.getInstance().getmSpeed()<recommendedSpeed){
+                    speedImage.setImageResource(R.drawable.up);
+                }else if (DriveData.getInstance().getmSpeed()>recommendedSpeed){
+                    speedImage.setImageResource(R.drawable.down);
+                }else{
+                    speedImage.setImageResource(R.drawable.stay);
+                }
+
+            }
+
+        }else{
+            instructText.setText("No Model Found Yet");
+            fullSModelScreenBtn.setVisibility(View.INVISIBLE);
+
+        }
+    }
 }
