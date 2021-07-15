@@ -99,7 +99,8 @@ Choose youre OBD device by clicking the bluetooth button, the drive will be star
   at the end of the drive, press the stop button in order to confirm your drive to the server.<br>
   Note: if all permissions has been given like requested, the drive file will be created in your storage folder under the path "EE-Drive/Drives". <br>
    <img src="images/screenshot_drive.png" alt="register">
-       ### Drive
+      
+         ### Drive
 Make sure the obd device is working.<br>
 Choose youre OBD device by clicking the bluetooth button, the drive will be start automatically after succsfully connecting and receiving data from the obd .<br>
   at the end of the drive, press the stop button in order to confirm your drive to the server.<br>
