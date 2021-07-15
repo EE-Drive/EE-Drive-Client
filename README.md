@@ -26,16 +26,16 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#register-a-car">Register A Car</a></li>
-         <li><a href="#approve-all-permissions ">Approve All Permissions</a></li>
+         <li><a href="#approve-all-permissions">Approve All Permissions</a></li>
       </ul
     </li>
             <li>
       <a href="#use-of-functionalities">Use Of Functionalities</a>
                 <ul>
         <li><a href="#choosing-a-car">Choosing a car</a></li>
-         <li><a href="#drive ">Drive</a></li>
-          <li><a href="#model ">Model</a></li>
-        <li><a href="#car-details">Car Details</a></li>
+         <li><a href="#drive">Drive</a></li>
+          <li><a href="#model">Model</a></li>
+        <li><a href="#car-history">Car History</a></li>
       </ul  
     </li>
   </ol>
@@ -102,16 +102,14 @@ Choose youre OBD device by clicking the bluetooth button, the drive will be star
    
    
    
-   ### Model
+   ### Model      
+ If you are in a model and you check the "Use Model" checkbox.<br>
+You can see on the navbar the current recommended speed .<br>
+Click "Show" to watch it in a larger popUp.<br>
+   <img src="images/screenshot_model.png" alt="register">
       
-    If you are in a model and you check the "Use Model" checkbox , <br>
-    You can see on the navbar the current recommended speed.<br>
-    Click "Show" to watch it in a larger popUp.
-    <img src="images/screenshot_model.png" alt="register">
-
-
-   
-
+      
+ 
   
   ### Car History
   You can  watch your drive history by clicking the "Drive History" button.<br>
