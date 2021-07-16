@@ -84,7 +84,6 @@ Android 10 - Confirm all location and write requests to files.<br>
     <img src="images/screenshot_permission_10.png" alt="register" width="200" height="400">
 
 In Android 11 - confirm the requests, and fasten them in the settings so that the app can write files to the device<br>
- <img src="images/screenshot_permission_11.png" alt="register" width="200" height="400">
 
 
    ## Use Of Functionalities 
